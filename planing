@@ -55,21 +55,40 @@ Cost of living index by country- Cost of Living Index
 Capitals -capital, continent , country
 
 tables:
-npx sequelize model:generate --name PopulationDensityByCountries --attributes Rank:int,Country_or_dependent_territory:string,Area_km2:float,Area_mi2:float,Population:int,Density_pop./km2:float,Density_pop./mi2:float,Date:text,Population_source:text --underscored
+npx sequelize model:generate --name PopulationDensityByCountries --attributes rank:int,country_or_dependent_territory:string,area_km2:float,area_mi2:float,population:int,density_pop./km2:float,density_pop./mi2:float,date:text,population_source:text --underscored
 
 npx sequelize model:generate --name Capital --attributes country:string,capital:string,continent:string --underscored
 
-npx sequelize model:generate --name General --attributes region:string,coastline(coast/area ratio):string,netMigration:integer,infantMortality(per1000births):float,GDP(perCapita):integer,Literacy(%):float,phones(per1000):float,Arable(%):float,crops(%):float,other(%):float,climate:integer,birthrate:float,deathrate:float,agriculture:float,industry:float,service:float --underscored
+npx sequelize model:generate --name General --attributes region:string,coastline(coast/area ratio):string,net_migration:integer,infant_mortality(per1000births):float,GDP(perCapita):integer,literacy(%):float,phones(per1000):float,arable(%):float,crops(%):float,other(%):float,climate:integer,birthrate:float,deathrate:float,agriculture:float,industry:float,service:float --underscored
 
-npx sequelize model:generate --name QualityOfLife --attributes Country:string,Quality_of_Life_Index:float,Purchasing_Power_Index:float,Safety_Index:float,Health_Care_Index:float,Cost_of_Living_Index:float,Property_Price_to_Income_Ratio:float,Traffic_Commute_Time_Index:float,Pollution_Index:float,Climate_Index:float --underscored
+npx sequelize model:generate --name QualityOfLife --attributes country:string,Quality_of_Life_Index:float,Purchasing_Power_Index:float,Safety_Index:float,Health_Care_Index:float,Cost_of_Living_Index:float,Property_Price_to_Income_Ratio:float,Traffic_Commute_Time_Index:float,Pollution_Index:float,climate_index:float --underscored
 
 npx_sequelize_model:generate --name HealthCare --attributes country:string,healthCareIndex:float,healthCareExp.:float --underscored
 
-npx sequelize model:generate --name CountriesAgeStructure --attributes country:string,age0to14Years:string,age15To64Years:string,ageAbove65Years:string --underscored
+npx sequelize model:generate --name Countries_age_structure --attributes country:string,age_0_to_14_Years:string,age_15_to_64_years:string,ageAbove65Years:string --underscored
+
+npx sequelize model:generate --name CostOfLivingIndexByCountry --attributes country:string,cost_of_living_index:float,rent_index:float,cost_of_living_plus_rent_index:float,groceries_index:float,restaurant_price_index:float,local_purchasing_power_index:float --underscored
+
+npx sequelize model:generate --name CrimeIndexByCountries --attributes country:string,crime_index:float,safety_index:float --underscored
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 population,capital,general,QualityOfLife,healthcare,CountriesAgeStructure
 
-population- Population, Area km2, Density pop./km2
+population-_Population,_Area km2, Density pop./km2
 
 general- Phones (per 1000)
 Quality of life-Quality of Life Index
