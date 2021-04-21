@@ -1,0 +1,80 @@
+1. טבלה לגינרוט שאלה
+ ID || type||table ||tamplate || x||y
+
+2.שאלות שמורות
+ID || questionID || Question String || Options String || Answer || 5 || 4 || 3 || 2 || 1 || Number of votes
+
+שחקנים:
+name||score
+שם||ניקוד נוכחי||תשבוות נכונות
+random 1-50 17,37...
+
+לשחקן יוצג לאורך כל המשחק הניקוד הנוכחי שלו וכמה נקודות הוא קיבל על כל תשובה נכונה.
+
+A(0-25) b(26-41) c(42-47) d(48-73) e(74-84) f(85-100)
+55D,30B,99F
+
+Type 1:(countries)
+1. Which country is most populous?                     -Population density by countries-Population
+2. Which country is least populous?                    -Population density by countries-Population
+3. Which country is the largest by total area?         -Population density by countries-Area km2
+4. Which country is the smallest by total area?        -Population density by countries-Area km2
+5. Which country is the most densely populated?        -Population density by countries-Density pop./km2
+6. Which country is the least densely populated?       -Population- density by countries-Density pop./km2
+7. Which country has the most cell phones per person?  -General-Phones (per 1000)
+* 8. Which country has the best quality of life?       -Quality of life-Quality of Life Index
+* 9. Which country has the best Health care?           -Health care - Health Care Index
+* 10. Which country has the higher elderly people percentage?   - Countries age structure-Age above 65 Years
+
+Type 2:(x=country)
+11. What is the capital of X?  -Capitals
+12. How many people live in X? -Population density by countries(num)
+13. In what continent is X?    -Capitals
+
+Type 3:
+14. Are there more people in X than in Y?                             -Population density by countries-Population
+15. Is X larger than Y?                                               -Population density by countries-Area km2
+16. Does X have a higher population density than Y?                   -Population density by countries-Density pop./km2
+17. Is the quality of life in X higher than the quality of life in Y? -Quality of life-Quality of Life Index
+18. Is the crime rate of X higher than the crime rate in Y?           -Crime index by countries- Crime Index
+19. Are restaurants in X more expensive than restaurants in Y?        -Cost of living index by country-Cost of Living Index
+* 20. Is the health care in X better than the health care in Y?       -Health care-:float,Health Care Index
+
+npm i sequelize mysql2
+npm install --save-dev sequelize-cli
+
+tables:
+population- Population, Area km2, Density pop./km2
+
+general- Phones (per 1000)
+Quality of life-Quality of Life Index
+Health care- Health Care Index
+Crime index by countries- Crime Index
+Countries age structure- Age above 65 Years
+Cost of living index by country- Cost of Living Index
+Capitals -capital, continent , country
+
+tables:
+npx sequelize model:generate --name PopulationDensityByCountries --attributes Rank:int,Country_or_dependent_territory:string,Area_km2:float,Area_mi2:float,Population:int,Density_pop./km2:float,Density_pop./mi2:float,Date:text,Population_source:text --underscored
+
+npx sequelize model:generate --name Capital --attributes country:string,capital:string,continent:string --underscored
+
+npx sequelize model:generate --name General --attributes region:string,coastline(coast/area ratio):string,netMigration:integer,infantMortality(per1000births):float,GDP(perCapita):integer,Literacy(%):float,phones(per1000):float,Arable(%):float,crops(%):float,other(%):float,climate:integer,birthrate:float,deathrate:float,agriculture:float,industry:float,service:float --underscored
+
+npx sequelize model:generate --name QualityOfLife --attributes Country:string,Quality_of_Life_Index:float,Purchasing_Power_Index:float,Safety_Index:float,Health_Care_Index:float,Cost_of_Living_Index:float,Property_Price_to_Income_Ratio:float,Traffic_Commute_Time_Index:float,Pollution_Index:float,Climate_Index:float --underscored
+
+npx_sequelize_model:generate --name HealthCare --attributes country:string,healthCareIndex:float,healthCareExp.:float --underscored
+
+npx sequelize model:generate --name CountriesAgeStructure --attributes country:string,age0to14Years:string,age15To64Years:string,ageAbove65Years:string --underscored
+
+population,capital,general,QualityOfLife,healthcare,CountriesAgeStructure
+
+population- Population, Area km2, Density pop./km2
+
+general- Phones (per 1000)
+Quality of life-Quality of Life Index
+Health care- Health Care Index
+Crime index by countries- Crime Index
+Countries age structure- Age above 65 Years
+Cost of living index by country- Cost of Living Index
+Capitals -capital, continent , country
