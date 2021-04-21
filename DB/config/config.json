@@ -1,8 +1,8 @@
 {
   "development": {
     "username": "root",
-    "password": null,
-    "database": "database_development",
+    "password": "nez6u37n",
+    "database": "country_trivia",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "define": {
