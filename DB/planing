@@ -1,13 +1,19 @@
 1. טבלה לגינרוט שאלה
- ID || type||table ||tamplate || x||y
+ ID || type||table_column||tamplate ||
+ npx sequelize model:generate --name Questions --attributes type:integer,table_column:string,tamplate:string --underscored
 
 2.שאלות שמורות
-ID || questionID || Question String || Options String || Answer || 5 || 4 || 3 || 2 || 1 || Number of votes
+id || question string || answer || options || rate_5 || 4 || 3 || 2 || 1 || Number of votes || average_vote
+npx sequelize model:generate --name Saved_Questions --attributes question:string,answer:string,options:text,rate_5:integer,rate_4:integer,rate_3:integer,rate_2:integer,rate_1:integer,vote_num:integer,avg_vote:float --underscored
+
 
 שחקנים:
 name||score
+npx sequelize model:generate --name Players --attributes name:string,score:integer --underscored
+
 שם||ניקוד נוכחי||תשבוות נכונות
 random 1-50 17,37...
+npx sequelize model:generate --name Current_Player --attributes name:string,current_score:integer,correct_answer:integer --underscored
 
 לשחקן יוצג לאורך כל המשחק הניקוד הנוכחי שלו וכמה נקודות הוא קיבל על כל תשובה נכונה.
 
@@ -44,15 +50,15 @@ npm i sequelize mysql2
 npm install --save-dev sequelize-cli
 
 tables:
-population- Population, Area km2, Density pop./km2
+population- Population, Area km2, Density popkm2
 
 general- Phones (per 1000)
 Quality of life-Quality of Life Index
 Health care- Health Care Index
 Crime index by countries- Crime Index
-Countries age structure- Age above 65 Years
-Cost of living index by country- Cost of Living Index
-Capitals -capital, continent , country
+Countries age structure- Age above 65 Years n
+Cost of living index by country- Cost of Living Index n
+Capitals -capital, continent , country n
 
 tables:
 npx sequelize model:generate --name PopulationDensityByCountries --attributes rank:integer,country_or_dependent_territory:string,area_km2:float,area_mi2:float,population:integer,density_pop./km2:float,density_pop./mi2:float,date:text,population_source:text --underscored
@@ -70,3 +76,27 @@ npx sequelize model:generate --name Countries_age_structure --attributes country
 npx sequelize model:generate --name CostOfLivingIndexByCountry --attributes country:string,cost_of_living_index:float,rent_index:float,cost_of_living_plus_rent_index:float,groceries_index:float,restaurant_price_index:float,local_purchasing_power_index:float --underscored
 
 npx sequelize model:generate --name CrimeIndexByCountries --attributes country:string,crime_index:float,safety_index:float --underscored
+
+
+
+SELECT g.country,g.Phones_per_1000, cap.Capital,cap.Continent,cost.Cost_of_Living_Index,age.Age_above_65_Years_percentage,crime.crime_index,h.health_care_index,q.Quality_of_Life_Index,p.Population,p.Area_km2,p.Density_popkm2
+FROM general g LEFT JOIN capitals cap
+using (country)
+LEFT JOIN cost_of_living cost
+using (country)
+LEFT JOIN countries_age_structure age
+using (country)
+LEFT JOIN crime
+using (country)
+LEFT JOIN healthcare h
+using (country)
+LEFT JOIN quality_of_life q
+using (country)
+LEFT JOIN population_and_density p
+on (p.Country_or_dependent_territory = g.country)
+
+npx sequelize model:generate --name All_Data --attributes country:string,Phones_per_1000:float,Capital:string,Continent:string,Cost_of_Living_Index:float,Age_above_65_Years_percentage:integer,crime_index:float,health_care_index:float,Quality_of_Life_Index:float,Population:integer,Area_km2:integer,Density_popkm2:integer --underscored
+
+npx sequelize-cli seed:generate --name insert_to_All_Data
+
+await queryInterface.bulkInsert("countries_trivia",[])
