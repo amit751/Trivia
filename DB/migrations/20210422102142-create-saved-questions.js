@@ -26,26 +26,20 @@ module.exports = {
       option_4: {
         type: Sequelize.TEXT,
       },
-      rate_5: {
+      tamplate_id: {
         type: Sequelize.INTEGER,
       },
-      rate_4: {
+      question_type: {
         type: Sequelize.INTEGER,
       },
-      rate_3: {
-        type: Sequelize.INTEGER,
-      },
-      rate_2: {
-        type: Sequelize.INTEGER,
-      },
-      rate_1: {
-        type: Sequelize.INTEGER,
-      },
-      vote_num: {
-        type: Sequelize.INTEGER,
-      },
-      avg_vote: {
+      avg_rate: {
         type: Sequelize.FLOAT,
+      },
+      total_rating:{
+        type: Sequelize.INTEGER,
+      },
+      total_votes: {
+        type: Sequelize.INTEGER,
       },
       created_at: {
         allowNull: false,
