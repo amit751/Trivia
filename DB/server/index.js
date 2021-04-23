@@ -218,10 +218,17 @@ app.post("/rate/:id" , async (req , res)=>{
       id : id
     }
   });
-   const result = await question.increment({
-    "total_rating" : data.rate,
-    "total_votes" : 1
-  });
+  const {avg_rate , total_rating , total_votes  } = question;
+  question["total_rating"]= total_rating + data.rate;
+  question["total_votes"]= total_votes+1;
+  question["avg_rate"]= (total_rating + data.rate)/(total_votes+1);
+  const result = await question.save();
+
+
+  //  const result = await question.increment({
+  //   "total_rating" : data.rate,
+  //   "total_votes" : 1
+  // });
   res.json(result);
 
 })
