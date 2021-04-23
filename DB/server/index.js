@@ -5,37 +5,8 @@ const express = require("express");
 const app = express();
 const {Saved_Questions,All_Data,Questions,Players, sequelize} = require("../models");
 const { Op, literal , Sequelize } = require("sequelize");
-const { QueryTypes } = require('sequelize');
 app.use(express.json());
-// app.get("/" , async (req , res)=>{
-//   const users = await sequelize.query("SELECT Continent , country FROM country_trivia.all_data group by Continent order by rand() limit 4  ", );
-//   res.send(users);
-// })
 
-//const users = await sequelize.query("SELECT * FROM `users`", { type: QueryTypes.SELECT });
-// Project.findAll({
-//   attributes: [
-//       // specify an array where the first element is the SQL function and the second is the alias
-//       [Sequelize.fn('DISTINCT', Sequelize.col('country')) ,'country'],
-
-//       // specify any additional columns, e.g. country_code
-//       // 'country_code'
-
-//   ]
-// }).then(function(country) {  })
-// [Sequelize.fn('DISTINCT', Sequelize.col(column)) ,column],
-// async function getRandomValuesFromColumn(column, num = 1, filterId = null) {
-//   const filter = { id: { [Op.ne]: filterId } };
-//   filter[column] = { [Op.not]: null };
-
-//   return Country.findAll({
-//       where: filter,
-//       order: Sequelize.literal('rand()'),
-//       limit: num,
-//       attributes:[ [Sequelize.fn('DISTINCT', Sequelize.col(column)), column] ]
-//   })
-//   .then( countries => countries.map( country => country.toJSON() ) )
-// }
 
 //functions
 const random = (min, max) => Math.floor(Math.random() * (max - min)) + min;
@@ -45,7 +16,6 @@ function getCountryFromData(column, numberOfOptions , questionID) {
     console.log("in 13");
     return All_Data.findOne({
       attributes:  [column , "country"],
-      // attributes: [ [Sequelize.fn('DISTINCT', Sequelize.col(column)) ,column] , "country" ].concat(Object.keys(All_Data.rawAttributes)),
       order: literal("rand()"),
       limit: 1,
      
@@ -74,12 +44,6 @@ function getCountryFromData(column, numberOfOptions , questionID) {
       });
   }
   }
-
-
-
-
-
-
 
 ///api
 //GET: /newQ => generate a new q ================
@@ -127,7 +91,9 @@ app.get("/newQuestion", async (req, res) => {
     responseObj.question = newQ.tamplate
     options.map((option , index)=>{
       responseObj[`option${index+1}`] = option.country
-    })
+    });
+    responseObj.type = newQ.type;
+    responseObj.tamplateId = newQ.id; 
     break;
     case 2:
       if (newQ.id === 13){
@@ -149,13 +115,16 @@ app.get("/newQuestion", async (req, res) => {
           responseObj[`option${index+1}`] = option[newQ.table_column]
         })
       }
-      
+      responseObj.type = newQ.type;
+      responseObj.tamplateId = newQ.id; 
       break;
     case 3:
       responseObj.question = newQ.tamplate.replace('XXX',options[0].country).replace('YYY',options[1].country);
       responseObj.XXX=options[0].country;
       responseObj.YYY=options[1].country;
       responseObj.column = newQ.table_column;
+      responseObj.type = newQ.type;
+      responseObj.tamplateId = newQ.id; 
       break;
 
   }
@@ -177,8 +146,6 @@ app.get('/savedQuestion', (req, res)=>{
     });
     console.log(savedQuestions);
     
-    // let sumOfAvgVotes = 0;
-    // savedQuestions.map(question=>sumOfAvgVotes = sumOfAvgVotes + question.avg_rate);
     let pickAQuestion = []
     for (const question of savedQuestions){
       for(let i = 1 ; i <= question.avg_rate ; i++){
@@ -200,18 +167,7 @@ app.get('/savedQuestion', (req, res)=>{
 
 
 
-// {question: "test",
-// answer :"45",
-// option_1: "44",
-// option_2:"44",
-// option_3:"44",
-// option_4:"44",
-// tamplate_id: 8,
-// question_type: 3,
-// avg_rate: 4,
-// total_rating: 4,
-// total_votes: 1
-// }
+
 app.post('/savedQuestion', (req, res) =>{
   const data = req.body;
   console.log(data , "this is data")
@@ -241,19 +197,6 @@ app.post("/rate/:id" , async (req , res)=>{
   res.json(result);
   
 })
-//  const result = await question.increment({
-//   "total_rating" : data.rate,
-//   "total_votes" : 1
-// });
-// const jane = await User.create({ name: "Jane", age: 100, cash: 5000 });
-// await jane.increment({
-//   'age': 2,
-//   'cash': 100
-// });
-
-// // If the values are incremented by the same amount, you can use this other syntax as well:
-// await jane.increment(['age', 'cash'], { by: 2 });
-// Decrementing works in the exact same way.
 
 
 
