@@ -7,10 +7,10 @@ const {Saved_Questions,All_Data,Questions,Players, sequelize} = require("../mode
 const { Op, literal , Sequelize } = require("sequelize");
 const { QueryTypes } = require('sequelize');
 app.use(express.json());
-app.get("/" , async (req , res)=>{
-  const users = await sequelize.query("SELECT Continent , country FROM country_trivia.all_data group by Continent order by rand() limit 4  ", );
-  res.send(users);
-})
+// app.get("/" , async (req , res)=>{
+//   const users = await sequelize.query("SELECT Continent , country FROM country_trivia.all_data group by Continent order by rand() limit 4  ", );
+//   res.send(users);
+// })
 
 //const users = await sequelize.query("SELECT * FROM `users`", { type: QueryTypes.SELECT });
 // Project.findAll({
@@ -85,10 +85,21 @@ function getCountryFromData(column, numberOfOptions , questionID) {
 //GET: /newQ => generate a new q ================
 // get: /savedQ => send a saved one ===============
 // post: /savedQ => post question ================
-// patch: /rate/id => rate a q 
+// patch: /rate/id => rate a q ==================
 // get: /player=>
-// post: /player => score and player name after game round
+// post: /player => score and player name after game round=================
 
+app.post("/players", async(req,res)=>{
+ const data = req.body;
+ const result = await Players.create(data,
+  {fields:["name" , "score" ]});
+  res.json(result);
+})
+app.get("/players" , async(req,res)=>{
+  const players = await Players.findAll({});
+  res.json(players);
+
+})
 
 app.get("/newQuestion", async (req, res) => {
   let responseObj = {};
@@ -184,8 +195,10 @@ app.get('/savedQuestion', (req, res)=>{
     responseObj.option3 = pickedQuestion.option_3 || null
     responseObj.option4 = pickedQuestion.option_4 || null
     res.json(responseObj);
-  })
-})
+  });
+});
+
+
 
 // {question: "test",
 // answer :"45",
@@ -225,13 +238,13 @@ app.post("/rate/:id" , async (req , res)=>{
   const result = await question.save();
 
 
-  //  const result = await question.increment({
-  //   "total_rating" : data.rate,
-  //   "total_votes" : 1
-  // });
   res.json(result);
-
+  
 })
+//  const result = await question.increment({
+//   "total_rating" : data.rate,
+//   "total_votes" : 1
+// });
 // const jane = await User.create({ name: "Jane", age: 100, cash: 5000 });
 // await jane.increment({
 //   'age': 2,
