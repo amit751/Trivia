@@ -82,10 +82,10 @@ function getCountryFromData(column, numberOfOptions , questionID) {
 
 
 ///api
-//GET: /newQ => generate a new q
-// get: /savedQ => send a saved one
-// post: /savedQ => post question
-// patch: /rate/id => rate a q
+//GET: /newQ => generate a new q ================
+// get: /savedQ => send a saved one ===============
+// post: /savedQ => post question ================
+// patch: /rate/id => rate a q 
 // get: /player=>
 // post: /player => score and player name after game round
 
@@ -209,6 +209,32 @@ app.post('/savedQuestion', (req, res) =>{
   })
  
 });
+
+app.post("/rate/:id" , async (req , res)=>{
+  const data = req.body;
+  const{ id} = req.params;
+  const question= await Saved_Questions.findOne({
+    where:{
+      id : id
+    }
+  });
+   const result = await question.increment({
+    "total_rating" : data.rate,
+    "total_votes" : 1
+  });
+  res.json(result);
+
+})
+// const jane = await User.create({ name: "Jane", age: 100, cash: 5000 });
+// await jane.increment({
+//   'age': 2,
+//   'cash': 100
+// });
+
+// // If the values are incremented by the same amount, you can use this other syntax as well:
+// await jane.increment(['age', 'cash'], { by: 2 });
+// Decrementing works in the exact same way.
+
 
 
 app.listen(3000, () => {
