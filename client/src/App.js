@@ -12,24 +12,7 @@ function App() {
   const handleSubmit = () => {
     axios.post("http");
   };
-  return (
-    <div>
-      <h1>HEllo</h1>
-      <h2>{playerName}</h2>
-      <BrowserRouter>
-        <Switch>
-          <Route
-            exact
-            path="/"
-            component={Home}
-            playerName={playerName}
-            setPlayerName={setPlayerName}
-            handleSubmit={handleSubmit}
-          />
-        </Switch>
-      </BrowserRouter>
-    </div>
-  );
+  return <div></div>;
 }
 
 export default App;
