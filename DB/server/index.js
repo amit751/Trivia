@@ -1,32 +1,38 @@
-
 //imports
 
 const express = require("express");
 const app = express();
-const {Saved_Questions,All_Data,Questions,Players, sequelize} = require("../models");
-const { Op, literal , Sequelize } = require("sequelize");
+const {
+  Saved_Questions,
+  All_Data,
+  Questions,
+  Players,
+  sequelize,
+} = require("../models");
+const { Op, literal, Sequelize } = require("sequelize");
 app.use(express.json());
-const {getAnswer} = require("../utils/functions");
+const { getAnswer } = require("../utils/functions");
+const cors = require("cors");
+app.use(cors());
 
 //functions
 const random = (min, max) => Math.floor(Math.random() * (max - min)) + min;
 
-function getCountryFromData(column, numberOfOptions , questionID) {
-  if(questionID === 13){
+function getCountryFromData(column, numberOfOptions, questionID) {
+  if (questionID === 13) {
     console.log("in 13");
     return All_Data.findOne({
-      attributes:  [column , "country"],
+      attributes: [column, "country"],
       order: literal("rand()"),
       limit: 1,
-     
     })
       .then((result) => {
-        return  result.toJSON();
+        return result.toJSON();
       })
       .catch((e) => {
         console.log(e);
       });
-  }else{
+  } else {
     console.log(" not in 13");
     return All_Data.findAll({
       where: {
@@ -43,7 +49,7 @@ function getCountryFromData(column, numberOfOptions , questionID) {
         console.log(e);
       });
   }
-  }
+}
 
 ///api
 //GET: /newQ => generate a new q ================
@@ -54,24 +60,19 @@ function getCountryFromData(column, numberOfOptions , questionID) {
 // post: /player => score and player name after game round=================
 //post : get answer:
 
-
-
-app.post("/players", async(req,res)=>{
- const data = req.body;
- const result = await Players.create(data,
-  {fields:["name" , "score" ]});
+app.post("/players", async (req, res) => {
+  const data = req.body;
+  const result = await Players.create(data, { fields: ["name", "score"] });
   res.json(result);
-})
-app.get("/players" , async(req,res)=>{
+});
+app.get("/players", async (req, res) => {
   const players = await Players.findAll({});
   res.json(players);
-
-})
+});
 
 app.get("/newQuestion", async (req, res) => {
   let responseObj = {};
   const newQ = await Questions.findOne({
-    
     order: literal("rand()"),
     limit: 1,
   });
@@ -85,98 +86,109 @@ app.get("/newQuestion", async (req, res) => {
 
   const options = await getCountryFromData(
     newQ["table_column"],
-    numberOfOptions , 
+    numberOfOptions,
     newQ.id
   );
 
-  switch(newQ.type) {
+  switch (newQ.type) {
     case 1:
-    responseObj.question = newQ.tamplate
-    options.map((option , index)=>{
-      responseObj[`option${index+1}`] = option.country
-    });
-    
-    break;
+      responseObj.question = newQ.tamplate;
+      options.map((option, index) => {
+        responseObj[`option${index + 1}`] = option.country;
+      });
+
+      break;
     case 2:
-      if (newQ.id === 13){
-        responseObj.question = newQ.tamplate.replace('XXX', options.country);
-        responseObj.option1=options[newQ.table_column];
-        const continents = ['Asia','Africa','North America','Central America','South America','Antarctica','Europe','Australia']
-        let optionContinents = continents.filter(continet => continet !== responseObj.option1);
-        let finalOptions =[];
-        for(let i=0 ; i < 3 ;i++){
-          finalOptions.push(optionContinents.splice(random(0 , optionContinents.length) , 1))
+      if (newQ.id === 13) {
+        responseObj.question = newQ.tamplate.replace("XXX", options.country);
+        responseObj.option1 = options[newQ.table_column];
+        const continents = [
+          "Asia",
+          "Africa",
+          "North America",
+          "Central America",
+          "South America",
+          "Antarctica",
+          "Europe",
+          "Australia",
+        ];
+        let optionContinents = continents.filter(
+          (continet) => continet !== responseObj.option1
+        );
+        let finalOptions = [];
+        for (let i = 0; i < 3; i++) {
+          finalOptions.push(
+            optionContinents.splice(random(0, optionContinents.length), 1)
+          );
         }
-        finalOptions.map((option , index)=>{
-          responseObj[`option${index+2}`] = option[0];
-        })
-        responseObj.XXX=options.country;
-      }else{
-        responseObj.question = newQ.tamplate.replace('XXX', options[0].country);
-        options.map((option , index)=>{
-          responseObj[`option${index+1}`] = option[newQ.table_column]
-        })
-        responseObj.XXX=options[0].country;
+        finalOptions.map((option, index) => {
+          responseObj[`option${index + 2}`] = option[0];
+        });
+        responseObj.XXX = options.country;
+      } else {
+        responseObj.question = newQ.tamplate.replace("XXX", options[0].country);
+        options.map((option, index) => {
+          responseObj[`option${index + 1}`] = option[newQ.table_column];
+        });
+        responseObj.XXX = options[0].country;
       }
-      
+
       break;
     case 3:
-      responseObj.question = newQ.tamplate.replace('XXX',options[0].country).replace('YYY',options[1].country);
-      responseObj.XXX=options[0].country;
-      responseObj.YYY=options[1].country;
-      
-      
-      break;
+      responseObj.question = newQ.tamplate
+        .replace("XXX", options[0].country)
+        .replace("YYY", options[1].country);
+      responseObj.XXX = options[0].country;
+      responseObj.YYY = options[1].country;
 
+      break;
   }
   responseObj.type = newQ.type;
-  responseObj.tamplateId = newQ.id; 
+  responseObj.tamplateId = newQ.id;
   responseObj["savedQuestions"] = false;
-  responseObj.column = newQ.table_column; 
+  responseObj.column = newQ.table_column;
   const allGivenData = [];
   allGivenData.push(options);
   allGivenData.push(newQ);
   allGivenData.push(responseObj);
-  return res.json(allGivenData);
-  
+  return res.json(responseObj);
 });
 
-
-app.get('/savedQuestion', (req, res)=>{
-  Saved_Questions.findAll({}).then(savedQuestionsBad=>{
-    let savedQuestions = []
+app.get("/savedQuestion", (req, res) => {
+  Saved_Questions.findAll({}).then((savedQuestionsBad) => {
+    let savedQuestions = [];
     savedQuestionsBad.map((result) => {
-      savedQuestions.push(result.toJSON())
+      savedQuestions.push(result.toJSON());
     });
     console.log(savedQuestions);
-    
-    let pickAQuestion = []
-    for (const question of savedQuestions){
-      for(let i = 1 ; i <= question.avg_rate ; i++){
+
+    let pickAQuestion = [];
+    for (const question of savedQuestions) {
+      for (let i = 1; i <= question.avg_rate; i++) {
         pickAQuestion.push(question);
       }
     }
-    let responseObj = {}
-    let pickedQuestion = pickAQuestion[random(0,pickAQuestion.length)];
-    
-    responseObj.question = pickedQuestion.question
-    responseObj.savedQuestionID = pickedQuestion.id
-    responseObj.option1 = pickedQuestion.option_1
-    responseObj.option2 = pickedQuestion.option_2
-    responseObj.option3 = pickedQuestion.option_3 || null
-    responseObj.option4 = pickedQuestion.option_4 || null
+    let responseObj = {};
+    let pickedQuestion = pickAQuestion[random(0, pickAQuestion.length)];
+
+    responseObj.question = pickedQuestion.question;
+    responseObj.savedQuestionID = pickedQuestion.id;
+    responseObj.option1 = pickedQuestion.option_1;
+    responseObj.option2 = pickedQuestion.option_2;
+    responseObj.option3 = pickedQuestion.option_3 || null;
+    responseObj.option4 = pickedQuestion.option_4 || null;
     responseObj.type = pickedQuestion.question_type;
     responseObj.tamplateId = pickedQuestion.tamplate_id;
-    responseObj["savedQuestions"] = true; 
-    
+    responseObj["savedQuestions"] = true;
+
     res.json(responseObj);
   });
 });
 
 // {
-  "xxx"
-  "yyy"
-  "column"
+("xxx");
+("yyy");
+("column");
 // "question
 //  "answer
 // "option_1
@@ -189,58 +201,69 @@ app.get('/savedQuestion', (req, res)=>{
 // "total_rating
 // "total_votes"
 // }
-app.post('/savedQuestion', async(req, res) =>{
+app.post("/savedQuestion", async (req, res) => {
   const data = req.body;
-  console.log(data , "this is data")
+  console.log(data, "this is data");
   data.answer = await getAnswer(data);
-  console.log("final answerr in api",data.answer);
-  
+  console.log("final answerr in api", data.answer);
 
-  Saved_Questions.create(data,
-    {fields:["question", "answer", "option_1","option_2","option_3","option_4","tamplate_id","question_type","avg_rate","total_rating","total_votes",]
-  }).then((result)=>{
-    return res.json(result)
-  })
- 
+  Saved_Questions.create(data, {
+    fields: [
+      "question",
+      "answer",
+      "option_1",
+      "option_2",
+      "option_3",
+      "option_4",
+      "tamplate_id",
+      "question_type",
+      "avg_rate",
+      "total_rating",
+      "total_votes",
+    ],
+  }).then((result) => {
+    console.log(result);
+    return res.json(result);
+  });
 });
 
-app.post("/rate/:id" , async (req , res)=>{
+app.post("/rate/:id", async (req, res) => {
   const data = req.body;
-  const{ id} = req.params;
-  const question= await Saved_Questions.findOne({
-    where:{
-      id : id
-    }
+  const { id } = req.params;
+  const question = await Saved_Questions.findOne({
+    where: {
+      id: id,
+    },
   });
-  const {avg_rate , total_rating , total_votes  } = question;
-  question["total_rating"]= total_rating + data.rate;
-  question["total_votes"]= total_votes+1;
-  question["avg_rate"]= (total_rating + data.rate)/(total_votes+1);
+  const { avg_rate, total_rating, total_votes } = question;
+  question["total_rating"] = total_rating + data.rate;
+  question["total_votes"] = total_votes + 1;
+  question["avg_rate"] = (total_rating + data.rate) / (total_votes + 1);
   const result = await question.save();
 
-
   res.json(result);
-  
-})
+});
 
-app.get("/savedAnswer/:id" , async (req,res)=>{
+app.get("/savedAnswer/:id", async (req, res) => {
   const questionId = req.params.id;
   const answer = await Saved_Questions.findOne({
-    where:{
-      id : questionId
+    where: {
+      id: questionId,
     },
-    attributes:["answer"]
+    attributes: ["answer"],
   });
   res.json(answer);
-
 });
-app.post("/getNewAnswer" , async (req,res)=>{
- try{const data = req.body;
- const answer = {};
- answer.answer =  await getAnswer(data);
- res.json(answer);
-}catch(e){console.log(e)};
-})
+app.post("/getNewAnswer", async (req, res) => {
+  try {
+    const data = req.body;
+    const answer = {};
+    answer.answer = await getAnswer(data);
+    res.json(answer);
+  } catch (e) {
+    console.log(e);
+  }
+});
 
 app.listen(3000, () => {
   console.log("listening on port 3000");
