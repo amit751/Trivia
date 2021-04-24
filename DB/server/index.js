@@ -6,7 +6,7 @@ const app = express();
 const {Saved_Questions,All_Data,Questions,Players, sequelize} = require("../models");
 const { Op, literal , Sequelize } = require("sequelize");
 app.use(express.json());
-
+const {getAnswer} = require("../utils/functions");
 
 //functions
 const random = (min, max) => Math.floor(Math.random() * (max - min)) + min;
@@ -52,6 +52,9 @@ function getCountryFromData(column, numberOfOptions , questionID) {
 // patch: /rate/id => rate a q ==================
 // get: /player=>
 // post: /player => score and player name after game round=================
+//post : get answer:
+
+
 
 app.post("/players", async(req,res)=>{
  const data = req.body;
@@ -92,8 +95,7 @@ app.get("/newQuestion", async (req, res) => {
     options.map((option , index)=>{
       responseObj[`option${index+1}`] = option.country
     });
-    responseObj.type = newQ.type;
-    responseObj.tamplateId = newQ.id; 
+    
     break;
     case 2:
       if (newQ.id === 13){
@@ -108,27 +110,29 @@ app.get("/newQuestion", async (req, res) => {
         finalOptions.map((option , index)=>{
           responseObj[`option${index+2}`] = option[0];
         })
-       
+        responseObj.XXX=options.country;
       }else{
         responseObj.question = newQ.tamplate.replace('XXX', options[0].country);
         options.map((option , index)=>{
           responseObj[`option${index+1}`] = option[newQ.table_column]
         })
+        responseObj.XXX=options[0].country;
       }
-      responseObj.type = newQ.type;
-      responseObj.tamplateId = newQ.id; 
+      
       break;
     case 3:
       responseObj.question = newQ.tamplate.replace('XXX',options[0].country).replace('YYY',options[1].country);
       responseObj.XXX=options[0].country;
       responseObj.YYY=options[1].country;
-      responseObj.column = newQ.table_column;
-      responseObj.type = newQ.type;
-      responseObj.tamplateId = newQ.id; 
+      
+      
       break;
 
   }
-   
+  responseObj.type = newQ.type;
+  responseObj.tamplateId = newQ.id; 
+  responseObj["savedQuestions"] = false;
+  responseObj.column = newQ.table_column; 
   const allGivenData = [];
   allGivenData.push(options);
   allGivenData.push(newQ);
@@ -156,21 +160,42 @@ app.get('/savedQuestion', (req, res)=>{
     let pickedQuestion = pickAQuestion[random(0,pickAQuestion.length)];
     
     responseObj.question = pickedQuestion.question
-    responseObj.questionID = pickedQuestion.id
+    responseObj.savedQuestionID = pickedQuestion.id
     responseObj.option1 = pickedQuestion.option_1
     responseObj.option2 = pickedQuestion.option_2
     responseObj.option3 = pickedQuestion.option_3 || null
     responseObj.option4 = pickedQuestion.option_4 || null
+    responseObj.type = pickedQuestion.question_type;
+    responseObj.tamplateId = pickedQuestion.tamplate_id;
+    responseObj["savedQuestions"] = true; 
+    
     res.json(responseObj);
   });
 });
 
-
-
-
-app.post('/savedQuestion', (req, res) =>{
+// {
+  "xxx"
+  "yyy"
+  "column"
+// "question
+//  "answer
+// "option_1
+// "option_2
+// "option_3
+// "option_4
+// "tamplate_id
+// "question_type
+// "avg_rate
+// "total_rating
+// "total_votes"
+// }
+app.post('/savedQuestion', async(req, res) =>{
   const data = req.body;
   console.log(data , "this is data")
+  data.answer = await getAnswer(data);
+  console.log("final answerr in api",data.answer);
+  
+
   Saved_Questions.create(data,
     {fields:["question", "answer", "option_1","option_2","option_3","option_4","tamplate_id","question_type","avg_rate","total_rating","total_votes",]
   }).then((result)=>{
@@ -198,7 +223,24 @@ app.post("/rate/:id" , async (req , res)=>{
   
 })
 
+app.get("/savedAnswer/:id" , async (req,res)=>{
+  const questionId = req.params.id;
+  const answer = await Saved_Questions.findOne({
+    where:{
+      id : questionId
+    },
+    attributes:["answer"]
+  });
+  res.json(answer);
 
+});
+app.post("/getNewAnswer" , async (req,res)=>{
+ try{const data = req.body;
+ const answer = {};
+ answer.answer =  await getAnswer(data);
+ res.json(answer);
+}catch(e){console.log(e)};
+})
 
 app.listen(3000, () => {
   console.log("listening on port 3000");
