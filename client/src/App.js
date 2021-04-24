@@ -1,18 +1,33 @@
-import "./App.css";
-import { BrowserRouter, Route, Link, Switch, Redirect } from "react-router-dom";
-import Home from "./components/Home";
-import { useState } from "react";
+import WelcomePage from "./component/WelcomePage";
+import React, { useRef, useEffect, useState, useMemo, useContext } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 import axios from "axios";
+import Game from "./component/Game";
 
 function App() {
-  const [playerName, setPlayerName] = useState("");
-  const handleChange = (e) => {
-    setPlayerName(e.target.value);
-  };
-  const handleSubmit = () => {
-    axios.post("http");
-  };
-  return <div></div>;
+  return (
+    <div className="App">
+      <Router>
+        <Switch>
+          <Route path="/Game" exact component={Game} />
+          <Route path="/" exact component={WelcomePage} />
+        </Switch>
+      </Router>
+    </div>
+  );
 }
 
 export default App;
+
+// <Route
+//                   path='/game'
+//                   render={(props) => (
+//                     <Game {...props} playerName={playerName} />
+//                   )}
+//                 />
