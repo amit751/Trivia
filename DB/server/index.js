@@ -192,53 +192,9 @@ app.get('/savedQuestion', (req, res)=>{
 app.post('/savedQuestion', async(req, res) =>{
   const data = req.body;
   console.log(data , "this is data")
-  if( data.tamplate_id<=10){
-    const {column, question_type , tamplate_id , option_1 ,option_2 ,option_3 ,option_4} = data;
-    const optionsArr = await  All_Data.findAll({
-      where: {
-        country: { [Op.or]: [option_1 ,option_2 ,option_3 ,option_4] },
-      },
-      attributes: [ column , "country"],
-      
-    });
-    const finalOption = optionsArr.reduce((previousLargestNumber, currentLargestNumber)=> {
-      if(data.tamplate_id === 2||data.tamplate_id === 4||data.tamplate_id === 6){
-        return (currentLargestNumber[ column] < previousLargestNumber[ column]) ? currentLargestNumber : previousLargestNumber;
-      }else{
-        return (currentLargestNumber[ column] > previousLargestNumber[ column]) ? currentLargestNumber : previousLargestNumber;
-      }
-    });
-    data.answer = finalOption["country"];
-
+  data.answer = await getAnswer(data);
+  console.log("final answerr in api",data.answer);
   
-  
-  }else if(11<=data.tamplate_id && data.tamplate_id<=13){
-    const {column, question_type , tamplate_id , option_1 ,option_2 ,option_3 ,option_4 , XXX} = data;
-    const answer = await  All_Data.findOne({
-      where: {
-        country: XXX,
-      },
-      attributes: [column],
-    });
-    data.answer = answer[column];
-  
-  }else if(14<=data.tamplate_id && data.tamplate_id<=20){
-    const {column, question_type , tamplate_id , YYY , XXX} = data;
-    const options = await  All_Data.findAll({
-      where: {
-        country: { [Op.or]: [XXX , YYY] },
-      },
-      attributes: [column , "country"],
-    });
-    const answer = options.reduce((previousLargestNumber, currentLargestNumber)=>{
-      return (currentLargestNumber[ column] > previousLargestNumber[ column]) ? currentLargestNumber : previousLargestNumber;
-    });
-    if( answer.country === XXX){
-      data.answer = "true";
-    }else{
-      data.answer = "false";
-    }
-  }
 
   Saved_Questions.create(data,
     {fields:["question", "answer", "option_1","option_2","option_3","option_4","tamplate_id","question_type","avg_rate","total_rating","total_votes",]
@@ -278,8 +234,12 @@ app.get("/savedAnswer/:id" , async (req,res)=>{
   res.json(answer);
 
 });
-app.post("/newAnswer" , (req,res)=>{
-
+app.post("/getNewAnswer" , async (req,res)=>{
+ try{const data = req.body;
+ const answer = {};
+ answer.answer =  await getAnswer(data);
+ res.json(answer);
+}catch(e){console.log(e)};
 })
 
 app.listen(3000, () => {
