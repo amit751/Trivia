@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Questions.init(
     {
-      type: DataTypes.INTEGER,
+      question_type: DataTypes.INTEGER,
       table_column: DataTypes.STRING,
       tamplate: DataTypes.STRING,
     },

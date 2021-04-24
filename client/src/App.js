@@ -1,4 +1,4 @@
-import WelcomePage from "./component/welcomePage";
+import WelcomePage from "./component/WelcomePage";
 import React, { useRef, useEffect, useState, useMemo, useContext } from "react";
 import {
   BrowserRouter as Router,

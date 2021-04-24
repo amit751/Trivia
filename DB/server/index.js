@@ -78,7 +78,7 @@ app.get("/newQuestion", async (req, res) => {
   });
 
   let numberOfOptions;
-  if (newQ.type === 1 || newQ.type === 2) {
+  if (newQ.question_type === 1 || newQ.question_type === 2) {
     numberOfOptions = 4;
   } else {
     numberOfOptions = 2;
@@ -90,18 +90,18 @@ app.get("/newQuestion", async (req, res) => {
     newQ.id
   );
 
-  switch (newQ.type) {
+  switch (newQ.question_type) {
     case 1:
       responseObj.question = newQ.tamplate;
       options.map((option, index) => {
-        responseObj[`option${index + 1}`] = option.country;
+        responseObj[`option_${index + 1}`] = option.country;
       });
 
       break;
     case 2:
       if (newQ.id === 13) {
         responseObj.question = newQ.tamplate.replace("XXX", options.country);
-        responseObj.option1 = options[newQ.table_column];
+        responseObj["option_1"] = options[newQ.table_column];
         const continents = [
           "Asia",
           "Africa",
@@ -113,7 +113,7 @@ app.get("/newQuestion", async (req, res) => {
           "Australia",
         ];
         let optionContinents = continents.filter(
-          (continet) => continet !== responseObj.option1
+          (continet) => continet !== responseObj.option_1
         );
         let finalOptions = [];
         for (let i = 0; i < 3; i++) {
@@ -122,13 +122,13 @@ app.get("/newQuestion", async (req, res) => {
           );
         }
         finalOptions.map((option, index) => {
-          responseObj[`option${index + 2}`] = option[0];
+          responseObj[`option_${index + 2}`] = option[0];
         });
         responseObj.XXX = options.country;
       } else {
         responseObj.question = newQ.tamplate.replace("XXX", options[0].country);
         options.map((option, index) => {
-          responseObj[`option${index + 1}`] = option[newQ.table_column];
+          responseObj[`option_${index + 1}`] = option[newQ.table_column];
         });
         responseObj.XXX = options[0].country;
       }
@@ -143,8 +143,8 @@ app.get("/newQuestion", async (req, res) => {
 
       break;
   }
-  responseObj.type = newQ.type;
-  responseObj.tamplateId = newQ.id;
+  responseObj["question_type "] = newQ.question_type;
+  responseObj["tamplate_id"] = newQ.id;
   responseObj["savedQuestions"] = false;
   responseObj.column = newQ.table_column;
   const allGivenData = [];
@@ -173,12 +173,12 @@ app.get("/savedQuestion", (req, res) => {
 
     responseObj.question = pickedQuestion.question;
     responseObj.savedQuestionID = pickedQuestion.id;
-    responseObj.option1 = pickedQuestion.option_1;
-    responseObj.option2 = pickedQuestion.option_2;
-    responseObj.option3 = pickedQuestion.option_3 || null;
-    responseObj.option4 = pickedQuestion.option_4 || null;
-    responseObj.type = pickedQuestion.question_type;
-    responseObj.tamplateId = pickedQuestion.tamplate_id;
+    responseObj["option_1"] = pickedQuestion.option_1;
+    responseObj["option_2"] = pickedQuestion.option_2;
+    responseObj["option_3"] = pickedQuestion.option_3 || null;
+    responseObj["option_4"] = pickedQuestion.option_4 || null;
+    responseObj["question_type"] = pickedQuestion.question_type;
+    responseObj["tamplate_id"] = pickedQuestion.tamplate_id;
     responseObj["savedQuestions"] = true;
 
     res.json(responseObj);
