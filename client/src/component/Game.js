@@ -132,9 +132,8 @@ export default function Game({ history, playerName }) {
     <div>
       game
       <h1>Question number- {questionCounter}</h1>
-      <h1>שאלה</h1>
-      <h2>{rateRef.current.value}</h2>
-      <select onChange={() => {}} ref={rateRef} name="rate">
+      <h1>QUESTION</h1>
+      <select id="select" onChange={() => {}} ref={rateRef} name="rate">
         <option value={0}></option>
         <option value={1}>1</option>
         <option value={2}>2</option>
@@ -142,7 +141,7 @@ export default function Game({ history, playerName }) {
         <option value={4}>4</option>
         <option value={5}>5</option>
       </select>
-      <div>{currentQuestion.question}</div>
+      <div id="question_num"> qution number: {currentQuestion.question}</div>
       <div id="options-container">
         {getOptions(currentQuestion).map((option) => {
           return (
@@ -159,9 +158,9 @@ export default function Game({ history, playerName }) {
       <button id="send-button" onClick={next}>
         send
       </button>
-      <p>mistakes counter {mistakeCounter}</p>
-      <div>your choise: {userAnswer}</div>
-      <div>
+      {/* <p>mistakes counter {mistakeCounter}</p> */}
+      <div id="user-choise">your choise: {userAnswer}</div>
+      <div id="game-life">
         You got {mistakeCounter === 0 ? 3 : mistakeCounter === 1 ? 2 : 1} life
         left
       </div>
