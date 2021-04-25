@@ -6,7 +6,7 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
-import WelcomePage from "./component/WelcomePage";
+import WelcomePage from "./component/welcomePage";
 import Game from "./component/Game";
 import TableScore from "./component/TableScore";
 
