@@ -160,6 +160,7 @@ app.get("/savedQuestion", (req, res) => {
     savedQuestionsBad.map((result) => {
       savedQuestions.push(result.toJSON());
     });
+    //.then((results) => console.log(results.map((result) => result.toJSON())));
     console.log(savedQuestions);
 
     let pickAQuestion = [];
