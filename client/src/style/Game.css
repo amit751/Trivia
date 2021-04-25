@@ -7,7 +7,11 @@
     sans-serif;
 }
 
-.question-box {
+.game-body .question-counter {
+  margin-top: 0px;
+}
+
+.game-body .question-box {
   width: 70%;
   height: 60vh;
   background-color: #9f73e6;
@@ -16,23 +20,23 @@
   border-radius: 20px;
 }
 
-#question {
+.game-body #question {
   font-size: 1.8em;
   margin-bottom: 50px;
 }
-.option {
+.game-body .option {
   margin-top: 10px;
 }
-.option:hover {
+.game-body .option:hover {
   cursor: pointer;
 }
 
-#select {
+.game-body #select {
   background-color: #6d60e4;
   border: none;
 }
 
-#send-button {
+.game-body #send-button {
   padding: 5px;
   padding-left: 10px;
   padding-right: 10px;
@@ -43,6 +47,6 @@
   margin-top: 20px;
   cursor: pointer;
 }
-#send-button:hover {
+.game-body #send-button:hover {
   opacity: 0.7;
 }
