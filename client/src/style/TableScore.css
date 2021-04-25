@@ -1,0 +1,54 @@
+body {
+  text-align: center;
+  font-size: x-large;
+  background-color: #c0dadc9e;
+}
+#table-component {
+  margin: auto;
+  margin-top: 4rem;
+  background-color: rgb(219 21 60 / 83%);
+  width: fit-content;
+  height: fit-content;
+  min-width: 60rem;
+  min-height: 52rem;
+  border-radius: 0.5rem;
+}
+#table {
+  margin: auto;
+}
+
+h1 {
+  padding-top: 4rem;
+  color: rgb(255, 255, 255);
+}
+td {
+  margin: 0rem, 6rem;
+  background-color: rgb(255, 255, 255);
+  border-radius: 0.8rem;
+}
+th {
+  margin: 3rem;
+  padding: 3rem;
+  font-size: xx-large;
+  color: rgb(25, 238, 25);
+}
+#link-container {
+  margin: 2rem;
+}
+.link {
+  margin: auto;
+  padding: 0;
+  top: 0.4em;
+  background-color: rgb(25, 238, 25);
+  border-radius: 0.3em;
+  border: black solid;
+  width: 12rem;
+  height: 4rem;
+  text-align: center;
+  font-size: xx-large;
+  font-weight: 500;
+  color: rgb(14, 9, 9);
+}
+a {
+  text-decoration: none;
+}

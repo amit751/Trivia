@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useMemo, useContext } from "react";
 import axios from "axios";
 import PlayerScore from "./PlayerScore";
-import "../Game.css";
+import "../style/Game.css";
 
 export default function Game({ history, playerName }) {
   console.log(playerName);
