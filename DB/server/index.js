@@ -143,7 +143,7 @@ app.get("/newQuestion", async (req, res) => {
 
       break;
   }
-  responseObj["question_type "] = newQ.question_type;
+  responseObj["question_type"] = newQ.question_type;
   responseObj["tamplate_id"] = newQ.id;
   responseObj["savedQuestions"] = false;
   responseObj.column = newQ.table_column;
