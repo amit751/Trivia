@@ -20,7 +20,6 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min;
 
 function getCountryFromData(column, numberOfOptions, questionID) {
   if (questionID === 13) {
-    console.log("in 13");
     return All_Data.findOne({
       attributes: [column, "country"],
       order: literal("rand()"),
@@ -33,7 +32,6 @@ function getCountryFromData(column, numberOfOptions, questionID) {
         console.log(e);
       });
   } else {
-    console.log(" not in 13");
     return All_Data.findAll({
       where: {
         [column]: { [Op.not]: null },
@@ -143,7 +141,7 @@ app.get("/newQuestion", async (req, res) => {
 
       break;
   }
-  responseObj["question_type "] = newQ.question_type;
+  responseObj["question_type"] = newQ.question_type;
   responseObj["tamplate_id"] = newQ.id;
   responseObj["savedQuestions"] = false;
   responseObj.column = newQ.table_column;
@@ -155,22 +153,24 @@ app.get("/newQuestion", async (req, res) => {
 });
 
 app.get("/savedQuestion", (req, res) => {
-  Saved_Questions.findAll({}).then((savedQuestionsBad) => {
-    let savedQuestions = [];
-    savedQuestionsBad.map((result) => {
-      savedQuestions.push(result.toJSON());
-    });
+  Saved_Questions.findAll({}).then((savedQuestionsJson) => {
+    console.log(savedQuestionsJson + " ->savedQuestionsJson");
+    const savedQuestions = savedQuestionsJson.map((result) => result.toJSON());
     console.log(savedQuestions);
-
+    // console.log(savedQuestionsJson.map((result) => result.toJSON()));
+    // console.log(savedQuestions + " ->savedQuestions");
     let pickAQuestion = [];
     for (const question of savedQuestions) {
+      console.log(question.avg_rate + " ->avg rate");
       for (let i = 1; i <= question.avg_rate; i++) {
+        console.log(question, "inside for lop to store");
         pickAQuestion.push(question);
       }
     }
     let responseObj = {};
     let pickedQuestion = pickAQuestion[random(0, pickAQuestion.length)];
-
+    console.log(pickAQuestion + " ->pickAQuestion");
+    console.log(pickedQuestion + " ->pickedQuestion");
     responseObj.question = pickedQuestion.question;
     responseObj.savedQuestionID = pickedQuestion.id;
     responseObj["option_1"] = pickedQuestion.option_1;
@@ -203,9 +203,8 @@ app.get("/savedQuestion", (req, res) => {
 // }
 app.post("/savedQuestion", async (req, res) => {
   const data = req.body;
-  console.log(data, "this is data");
+
   data.answer = await getAnswer(data);
-  console.log("final answerr in api", data.answer);
 
   Saved_Questions.create(data, {
     fields: [
@@ -222,7 +221,6 @@ app.post("/savedQuestion", async (req, res) => {
       "total_votes",
     ],
   }).then((result) => {
-    console.log(result);
     return res.json(result);
   });
 });

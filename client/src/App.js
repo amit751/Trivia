@@ -7,7 +7,7 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
-import axios from "axios";
+
 import Game from "./component/Game";
 
 function App() {
