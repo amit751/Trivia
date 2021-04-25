@@ -1,54 +1,54 @@
-body {
+#table-component {
   text-align: center;
   font-size: x-large;
-  background-color: #c0dadc9e;
-}
-#table-component {
+  background-color: #dedf9e;
   margin: auto;
   margin-top: 4rem;
-  background-color: rgb(219 21 60 / 83%);
+  /* background-color: rgb(219 21 60 / 83%); */
   width: fit-content;
   height: fit-content;
   min-width: 60rem;
   min-height: 52rem;
   border-radius: 0.5rem;
 }
-#table {
+
+#table-component #table {
   margin: auto;
 }
 
-h1 {
+#table-component h1 {
   padding-top: 4rem;
-  color: rgb(255, 255, 255);
+  color: #397ed8;
 }
-td {
+#table-component td {
   margin: 0rem, 6rem;
-  background-color: rgb(255, 255, 255);
+  background-color: #ffc9c7;
   border-radius: 0.8rem;
+  color: rgb(8, 3, 3);
 }
-th {
+#table-component th {
   margin: 3rem;
   padding: 3rem;
   font-size: xx-large;
-  color: rgb(25, 238, 25);
+  color: #3a3a8a;
 }
-#link-container {
+#table-component #link-container {
   margin: 2rem;
 }
-.link {
+#table-component .link {
   margin: auto;
   padding: 0;
   top: 0.4em;
-  background-color: rgb(25, 238, 25);
+  background-color: #89da59;
   border-radius: 0.3em;
-  border: black solid;
-  width: 12rem;
-  height: 4rem;
+
+  width: 8rem;
+  height: 3rem;
   text-align: center;
-  font-size: xx-large;
+  font-size: x-large;
   font-weight: 500;
-  color: rgb(14, 9, 9);
+  color: rgb(255, 255, 255);
 }
-a {
+#table-component a {
   text-decoration: none;
 }

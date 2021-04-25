@@ -6,12 +6,12 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
+// import "../style/Welcome.css";
 
-import axios from "axios";
 export default function WelcomePage({ setPlayerName }) {
   const input = useRef();
   return (
-    <div>
+    <div id="welcome-component">
       <input ref={input} id="player-name" type="text"></input>
       <Link className="link" to="/Game">
         <button

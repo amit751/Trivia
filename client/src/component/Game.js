@@ -131,7 +131,7 @@ export default function Game({ history, playerName }) {
 
   return (
     <div className="game-body">
-      <h1>Question number- {questionCounter}</h1>
+      <h1 className="question-counter">Question number- {questionCounter}</h1>
       <span>rate this question: </span>
 
       <select id="select" onChange={() => {}} ref={rateRef} name="rate">
