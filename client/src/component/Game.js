@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState, useMemo, useContext } from "react";
 import axios from "axios";
 import PlayerScore from "./PlayerScore";
+import "../style/Game.css";
 
 export default function Game({ history, playerName }) {
   console.log(playerName);
@@ -129,10 +130,10 @@ export default function Game({ history, playerName }) {
   };
 
   return (
-    <div>
-      game
+    <div className="game-body">
       <h1>Question number- {questionCounter}</h1>
-      <h1>QUESTION</h1>
+      <span>rate this question: </span>
+
       <select id="select" onChange={() => {}} ref={rateRef} name="rate">
         <option value={0}></option>
         <option value={1}>1</option>
@@ -141,24 +142,26 @@ export default function Game({ history, playerName }) {
         <option value={4}>4</option>
         <option value={5}>5</option>
       </select>
-      <div id="question_num"> qution number: {currentQuestion.question}</div>
-      <div id="options-container">
-        {getOptions(currentQuestion).map((option) => {
-          return (
-            <div
-              onClick={() => {
-                setUserAnswer(option);
-              }}
-            >
-              {option}
-            </div>
-          );
-        })}
+      <div className="question-box">
+        <div id="question">{currentQuestion.question}</div>
+        <div id="options-container">
+          {getOptions(currentQuestion).map((option) => {
+            return (
+              <div
+                className="option"
+                onClick={() => {
+                  setUserAnswer(option);
+                }}
+              >
+                {option}
+              </div>
+            );
+          })}
+        </div>
+        <button id="send-button" onClick={next}>
+          send
+        </button>
       </div>
-      <button id="send-button" onClick={next}>
-        send
-      </button>
-      {/* <p>mistakes counter {mistakeCounter}</p> */}
       <div id="user-choise">your choise: {userAnswer}</div>
       <div id="game-life">
         You got {mistakeCounter === 0 ? 3 : mistakeCounter === 1 ? 2 : 1} life

@@ -7,7 +7,7 @@ import {
   Redirect,
 } from "react-router-dom";
 import axios from "axios";
-import "../index.css";
+import "../style/TableScore.css";
 
 export default function TableScore({ history, playerName }) {
   console.log(playerName);
@@ -18,33 +18,37 @@ export default function TableScore({ history, playerName }) {
     });
   }, []);
   return (
-    <div>
+    <div id="table-component">
       <h1>table score</h1>
-      <table>
-        <tr>
-          <th>Player</th>
-          <th>Score</th>
-          <th>Rank</th>
-        </tr>
-        {tableScore.map((player, index) =>
-          player.name === playerName ? (
-            <tr style={{ backgroundColor: `yellow` }}>
-              <td>{player.name}</td>
-              <td>{player.score}</td>
-              <td>{index + 1}</td>
-            </tr>
-          ) : (
-            <tr>
-              <td>{player.name}</td>
-              <td>{player.score}</td>
-              <td>{index + 1}</td>
-            </tr>
-          )
-        )}
-      </table>
-      <Link className="link" to="/">
-        start a new game
-      </Link>
+      <div id="table-container">
+        <table id="table">
+          <tr>
+            <th>Player</th>
+            <th>Score</th>
+            <th>Rank</th>
+          </tr>
+          {tableScore.map((player, index) =>
+            player.name === playerName ? (
+              <tr style={{ backgroundColor: `yellow` }}>
+                <td>{player.name}</td>
+                <td>{player.score}</td>
+                <td>{index + 1}</td>
+              </tr>
+            ) : (
+              <tr>
+                <td>{player.name}</td>
+                <td>{player.score}</td>
+                <td>{index + 1}</td>
+              </tr>
+            )
+          )}
+        </table>
+      </div>
+      <div id="link-container">
+        <Link to="/">
+          <div className="link">start game</div>
+        </Link>
+      </div>
     </div>
   );
 }
