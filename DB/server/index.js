@@ -64,7 +64,9 @@ app.post("/players", async (req, res) => {
   res.json(result);
 });
 app.get("/players", async (req, res) => {
-  const players = await Players.findAll({});
+  const players = await Players.findAll({
+    order: [["score", "DESC"]],
+  });
   res.json(players);
 });
 

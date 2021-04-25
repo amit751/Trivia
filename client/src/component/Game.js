@@ -2,7 +2,8 @@ import React, { useRef, useEffect, useState, useMemo, useContext } from "react";
 import axios from "axios";
 import PlayerScore from "./PlayerScore";
 
-export default function Game({ history }) {
+export default function Game({ history, playerName }) {
+  console.log(playerName);
   const alreadyAskedSavedQuestion = useRef([]);
   const [currentQuestion, setCurrentQuestion] = useState({
     question: "",
@@ -20,13 +21,24 @@ export default function Game({ history }) {
 
   useEffect(() => {
     if (mistakeCounter === 3) {
-      history.push("/");
+      console.log(playerName, "   ->playerName");
+      console.log(totalScore, "  ->totalScore");
+      axios
+        .post("http://localhost:3000/players", {
+          name: playerName,
+          score: totalScore,
+        })
+        .then((result) => {
+          console.log(result);
+          history.push("/TableScore");
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     }
   }, [mistakeCounter]);
 
   useEffect(async () => {
-    console.log(currentQuestion, "  -> currentQuestion");
-    console.log(alreadyAskedSavedQuestion.current, "already asked");
     if (questionCounter % 3 === 0) {
       const { data: test } = await axios.get(
         "http://localhost:3000/savedQuestion"
@@ -65,7 +77,6 @@ export default function Game({ history }) {
 
   const next = async () => {
     let dbAnswer = "";
-    console.log(currentQuestion.savedQuestions, "saved?");
     if (currentQuestion.savedQuestions) {
       if (Number(rateRef.current.value)) {
         await axios.post(
@@ -79,7 +90,6 @@ export default function Game({ history }) {
         `http://localhost:3000/savedAnswer/${currentQuestion.savedQuestionID}` ////
       );
       dbAnswer = data.answer;
-      console.log(currentQuestion.savedQuestionID);
       alreadyAskedSavedQuestion.current = [
         ...alreadyAskedSavedQuestion.current,
         currentQuestion.savedQuestionID,
@@ -115,7 +125,6 @@ export default function Game({ history }) {
     }
     rateRef.current.value = 0;
     setQuestionCounter((questionCounter) => ++questionCounter); ////////////////change
-    console.log("before use effect");
   };
 
   return (
@@ -149,9 +158,10 @@ export default function Game({ history }) {
       <button id="send-button" onClick={next}>
         send
       </button>
+      <p>mistakes counter {mistakeCounter}</p>
       <div>your choise: {userAnswer}</div>
       <div>
-        You got life {mistakeCounter === 0 ? 3 : mistakeCounter === 1 ? 2 : 1}{" "}
+        You got {mistakeCounter === 0 ? 3 : mistakeCounter === 1 ? 2 : 1} life
         left
       </div>
       <PlayerScore questionScore={questionScore} totalScore={totalScore} />
