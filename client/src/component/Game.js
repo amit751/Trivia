@@ -3,7 +3,7 @@ import axios from "axios";
 import PlayerScore from "./PlayerScore";
 
 export default function Game({ history }) {
-  const askedSavedQuestion = [];
+  const alreadyAskedSavedQuestion = useRef([]);
   const [currentQuestion, setCurrentQuestion] = useState({
     question: "",
     option_1: "",
@@ -15,7 +15,8 @@ export default function Game({ history }) {
   const [questionScore, setQuestionScore] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
   const [mistakeCounter, setMistakeCounter] = useState(0);
-  const rateRef = useRef();
+  const rateRef = useRef(0);
+  const [questionCounter, setQuestionCounter] = useState(1);
 
   useEffect(() => {
     if (mistakeCounter === 3) {
@@ -24,59 +25,76 @@ export default function Game({ history }) {
   }, [mistakeCounter]);
 
   useEffect(async () => {
-    console.log("did mount");
+    console.log(currentQuestion, "  -> currentQuestion");
+    console.log(alreadyAskedSavedQuestion.current, "already asked");
+    if (questionCounter % 3 === 0) {
+      const { data: test } = await axios.get(
+        "http://localhost:3000/savedQuestion"
+      );
+      if (
+        !test.data ||
+        alreadyAskedSavedQuestion.current.includes(test.savedQuestionID)
+      ) {
+        const { data } = await axios.get("http://localhost:3000/newQuestion");
+        setCurrentQuestion(data);
+      } else {
+        setCurrentQuestion(test);
+      }
+    } else {
+      const { data } = await axios.get("http://localhost:3000/newQuestion");
+      setCurrentQuestion(data);
+    }
+  }, [questionCounter]);
+
+  useEffect(async () => {
     const { data } = await axios.get("http://localhost:3000/newQuestion");
     setCurrentQuestion(data);
-    console.log(data, " -------> DATA");
   }, []);
 
   const getOptions = (currentQuestion) => {
-    console.log(currentQuestion);
     let options = [];
-    console.log(currentQuestion.question_type);
     if (currentQuestion.question_type < 3) {
       for (let i = 0; i < 4; i++) {
         options.push(currentQuestion[`option_${i + 1}`]);
-        // console.log(
-        //   currentQuestion[`option_${i + 1}` + " ----> option for loop"]
-        // );
       }
     } else if (currentQuestion.question_type === 3) {
-      console.log("in type 3");
       options = ["true", "false"];
     }
-    console.log(options + "  ---> options");
     return options;
   };
 
   const next = async () => {
-    console.log("inside next", currentQuestion);
     let dbAnswer = "";
+    console.log(currentQuestion.savedQuestions, "saved?");
     if (currentQuestion.savedQuestions) {
-      if (rateRef.current.value) {
+      if (Number(rateRef.current.value)) {
         await axios.post(
           `http://localhost:3000/rate/${currentQuestion.savedQuestionID}`,
           {
-            rate: rateRef.current.value,
+            rate: Number(rateRef.current.value),
           }
         );
       }
-      console.log("in firs if");
       const { data } = await axios.get(
         `http://localhost:3000/savedAnswer/${currentQuestion.savedQuestionID}` ////
       );
       dbAnswer = data.answer;
-      askedSavedQuestion.push(data.id);
-      console.log("db answer", dbAnswer, "useranswer", userAnswer);
+      console.log(currentQuestion.savedQuestionID);
+      alreadyAskedSavedQuestion.current = [
+        ...alreadyAskedSavedQuestion.current,
+        currentQuestion.savedQuestionID,
+      ];
     } else {
-      if (rateRef.current.value) {
-        console.log("inside", rateRef.current.value);
+      if (Number(rateRef.current.value)) {
         const { data } = await axios.post(
           "http://localhost:3000/savedQuestion",
           currentQuestion
         );
-        console.log(data, "hi", data.id);
-        askedSavedQuestion.push(data.id);
+
+        alreadyAskedSavedQuestion.current = [
+          ...alreadyAskedSavedQuestion.current,
+          data.id,
+        ];
         await axios.post(`http://localhost:3000/rate/${data.id}`, {
           rate: Number(rateRef.current.value),
         });
@@ -87,7 +105,6 @@ export default function Game({ history }) {
       );
 
       dbAnswer = data.answer;
-      console.log("db answer", dbAnswer, "useranswer", userAnswer);
     }
     if (dbAnswer === userAnswer) {
       setQuestionScore(100);
@@ -96,18 +113,19 @@ export default function Game({ history }) {
       setQuestionScore(0);
       setMistakeCounter((mistakeCounter) => ++mistakeCounter);
     }
-
-    const { data } = await axios.get("http://localhost:3000/newQuestion");
-    console.log(data);
-    setCurrentQuestion(data);
+    rateRef.current.value = 0;
+    setQuestionCounter((questionCounter) => ++questionCounter); ////////////////change
+    console.log("before use effect");
   };
 
   return (
     <div>
       game
+      <h1>Question number- {questionCounter}</h1>
       <h1>שאלה</h1>
+      <h2>{rateRef.current.value}</h2>
       <select onChange={() => {}} ref={rateRef} name="rate">
-        <option value={null}></option>
+        <option value={0}></option>
         <option value={1}>1</option>
         <option value={2}>2</option>
         <option value={3}>3</option>
@@ -132,6 +150,10 @@ export default function Game({ history }) {
         send
       </button>
       <div>your choise: {userAnswer}</div>
+      <div>
+        You got life {mistakeCounter === 0 ? 3 : mistakeCounter === 1 ? 2 : 1}{" "}
+        left
+      </div>
       <PlayerScore questionScore={questionScore} totalScore={totalScore} />
     </div>
   );

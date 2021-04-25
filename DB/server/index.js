@@ -153,36 +153,44 @@ app.get("/newQuestion", async (req, res) => {
 });
 
 app.get("/savedQuestion", (req, res) => {
-  Saved_Questions.findAll({}).then((savedQuestionsJson) => {
-    console.log(savedQuestionsJson + " ->savedQuestionsJson");
-    const savedQuestions = savedQuestionsJson.map((result) => result.toJSON());
-    console.log(savedQuestions);
-    // console.log(savedQuestionsJson.map((result) => result.toJSON()));
-    // console.log(savedQuestions + " ->savedQuestions");
-    let pickAQuestion = [];
-    for (const question of savedQuestions) {
-      console.log(question.avg_rate + " ->avg rate");
-      for (let i = 1; i <= question.avg_rate; i++) {
-        console.log(question, "inside for lop to store");
-        pickAQuestion.push(question);
-      }
-    }
-    let responseObj = {};
-    let pickedQuestion = pickAQuestion[random(0, pickAQuestion.length)];
-    console.log(pickAQuestion + " ->pickAQuestion");
-    console.log(pickedQuestion + " ->pickedQuestion");
-    responseObj.question = pickedQuestion.question;
-    responseObj.savedQuestionID = pickedQuestion.id;
-    responseObj["option_1"] = pickedQuestion.option_1;
-    responseObj["option_2"] = pickedQuestion.option_2;
-    responseObj["option_3"] = pickedQuestion.option_3 || null;
-    responseObj["option_4"] = pickedQuestion.option_4 || null;
-    responseObj["question_type"] = pickedQuestion.question_type;
-    responseObj["tamplate_id"] = pickedQuestion.tamplate_id;
-    responseObj["savedQuestions"] = true;
+  Saved_Questions.findAll({})
+    .then((savedQuestionsJson) => {
+      const savedQuestions = savedQuestionsJson.map((result) =>
+        result.toJSON()
+      );
+      console.log(
+        "egggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
+        savedQuestions
+      );
+      if (savedQuestions.toString() === [].toString()) {
+        return res.json({ data: false });
+      } else {
+        let pickAQuestion = [];
+        for (const question of savedQuestions) {
+          for (let i = 1; i <= question.avg_rate; i++) {
+            pickAQuestion.push(question);
+          }
+        }
+        let responseObj = {};
+        let pickedQuestion = pickAQuestion[random(0, pickAQuestion.length)];
+        console.log(pickAQuestion, " ->pickAQuestion");
+        console.log(pickedQuestion, " ->pickedQuestion");
+        responseObj.question = pickedQuestion.question;
+        responseObj.savedQuestionID = pickedQuestion.id;
+        responseObj["option_1"] = pickedQuestion.option_1;
+        responseObj["option_2"] = pickedQuestion.option_2;
+        responseObj["option_3"] = pickedQuestion.option_3 || null;
+        responseObj["option_4"] = pickedQuestion.option_4 || null;
+        responseObj["question_type"] = pickedQuestion.question_type;
+        responseObj["tamplate_id"] = pickedQuestion.tamplate_id;
+        responseObj["savedQuestions"] = true;
+        responseObj.data = true;
+        console.log(responseObj);
 
-    res.json(responseObj);
-  });
+        return res.json(responseObj);
+      }
+    })
+    .catch((e) => console.log(e));
 });
 
 // {
@@ -203,8 +211,10 @@ app.get("/savedQuestion", (req, res) => {
 // }
 app.post("/savedQuestion", async (req, res) => {
   const data = req.body;
+  console.log("teeeeeeeeeeeeeeeeeeeee body", req.body);
 
   data.answer = await getAnswer(data);
+  console.log(data.answer);
 
   Saved_Questions.create(data, {
     fields: [
