@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 
 import axios from "axios";
-export default function WelcomePage() {
+export default function WelcomePage({ setPlayerName }) {
   const input = useRef();
   return (
     <div>
@@ -16,12 +16,13 @@ export default function WelcomePage() {
       <Link className="link" to="/Game">
         <button
           onClick={() => {
-            alert(input.current.value);
+            setPlayerName(input.current.value);
           }}
         >
           START GAME
         </button>
       </Link>
+      <Link to="/TableScore">Table score</Link>
     </div>
   );
 }

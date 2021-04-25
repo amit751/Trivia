@@ -20,7 +20,6 @@ const random = (min, max) => Math.floor(Math.random() * (max - min)) + min;
 
 function getCountryFromData(column, numberOfOptions, questionID) {
   if (questionID === 13) {
-    console.log("in 13");
     return All_Data.findOne({
       attributes: [column, "country"],
       order: literal("rand()"),
@@ -33,7 +32,6 @@ function getCountryFromData(column, numberOfOptions, questionID) {
         console.log(e);
       });
   } else {
-    console.log(" not in 13");
     return All_Data.findAll({
       where: {
         [column]: { [Op.not]: null },
@@ -66,7 +64,9 @@ app.post("/players", async (req, res) => {
   res.json(result);
 });
 app.get("/players", async (req, res) => {
-  const players = await Players.findAll({});
+  const players = await Players.findAll({
+    order: [["score", "DESC"]],
+  });
   res.json(players);
 });
 
@@ -155,35 +155,41 @@ app.get("/newQuestion", async (req, res) => {
 });
 
 app.get("/savedQuestion", (req, res) => {
-  Saved_Questions.findAll({}).then((savedQuestionsBad) => {
-    let savedQuestions = [];
-    savedQuestionsBad.map((result) => {
-      savedQuestions.push(result.toJSON());
-    });
-    //.then((results) => console.log(results.map((result) => result.toJSON())));
-    console.log(savedQuestions);
+  Saved_Questions.findAll({})
+    .then((savedQuestionsJson) => {
+      const savedQuestions = savedQuestionsJson.map((result) =>
+        result.toJSON()
+      );
 
-    let pickAQuestion = [];
-    for (const question of savedQuestions) {
-      for (let i = 1; i <= question.avg_rate; i++) {
-        pickAQuestion.push(question);
+      if (savedQuestions.toString() === [].toString()) {
+        return res.json({ data: false });
+      } else {
+        let pickAQuestion = [];
+        for (const question of savedQuestions) {
+          for (let i = 1; i <= question.avg_rate; i++) {
+            pickAQuestion.push(question);
+          }
+        }
+        let responseObj = {};
+        let pickedQuestion = pickAQuestion[random(0, pickAQuestion.length)];
+        console.log(pickAQuestion, " ->pickAQuestion");
+        console.log(pickedQuestion, " ->pickedQuestion");
+        responseObj.question = pickedQuestion.question;
+        responseObj.savedQuestionID = pickedQuestion.id;
+        responseObj["option_1"] = pickedQuestion.option_1;
+        responseObj["option_2"] = pickedQuestion.option_2;
+        responseObj["option_3"] = pickedQuestion.option_3 || null;
+        responseObj["option_4"] = pickedQuestion.option_4 || null;
+        responseObj["question_type"] = pickedQuestion.question_type;
+        responseObj["tamplate_id"] = pickedQuestion.tamplate_id;
+        responseObj["savedQuestions"] = true;
+        responseObj.data = true;
+        console.log(responseObj);
+
+        return res.json(responseObj);
       }
-    }
-    let responseObj = {};
-    let pickedQuestion = pickAQuestion[random(0, pickAQuestion.length)];
-
-    responseObj.question = pickedQuestion.question;
-    responseObj.savedQuestionID = pickedQuestion.id;
-    responseObj["option_1"] = pickedQuestion.option_1;
-    responseObj["option_2"] = pickedQuestion.option_2;
-    responseObj["option_3"] = pickedQuestion.option_3 || null;
-    responseObj["option_4"] = pickedQuestion.option_4 || null;
-    responseObj["question_type"] = pickedQuestion.question_type;
-    responseObj["tamplate_id"] = pickedQuestion.tamplate_id;
-    responseObj["savedQuestions"] = true;
-
-    res.json(responseObj);
-  });
+    })
+    .catch((e) => console.log(e));
 });
 
 // {
@@ -204,9 +210,10 @@ app.get("/savedQuestion", (req, res) => {
 // }
 app.post("/savedQuestion", async (req, res) => {
   const data = req.body;
-  console.log(data, "this is data");
+  console.log("teeeeeeeeeeeeeeeeeeeee body", req.body);
+
   data.answer = await getAnswer(data);
-  console.log("final answerr in api", data.answer);
+  console.log(data.answer);
 
   Saved_Questions.create(data, {
     fields: [
@@ -223,7 +230,6 @@ app.post("/savedQuestion", async (req, res) => {
       "total_votes",
     ],
   }).then((result) => {
-    console.log(result);
     return res.json(result);
   });
 });

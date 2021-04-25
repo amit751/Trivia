@@ -2,8 +2,9 @@ import React, { useRef, useEffect, useState, useMemo, useContext } from "react";
 import axios from "axios";
 import PlayerScore from "./PlayerScore";
 
-export default function Game({ history }) {
-  const askedSavedQuestion = [];
+export default function Game({ history, playerName }) {
+  console.log(playerName);
+  const alreadyAskedSavedQuestion = useRef([]);
   const [currentQuestion, setCurrentQuestion] = useState({
     question: "",
     option_1: "",
@@ -15,108 +16,154 @@ export default function Game({ history }) {
   const [questionScore, setQuestionScore] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
   const [mistakeCounter, setMistakeCounter] = useState(0);
+  const rateRef = useRef(0);
+  const [questionCounter, setQuestionCounter] = useState(1);
+
   useEffect(() => {
     if (mistakeCounter === 3) {
-      history.push("/");
+      console.log(playerName, "   ->playerName");
+      console.log(totalScore, "  ->totalScore");
+      axios
+        .post("http://localhost:3000/players", {
+          name: playerName,
+          score: totalScore,
+        })
+        .then((result) => {
+          console.log(result);
+          history.push("/TableScore");
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     }
   }, [mistakeCounter]);
 
   useEffect(async () => {
-    console.log("did mount");
+    if (questionCounter % 3 === 0) {
+      const { data: test } = await axios.get(
+        "http://localhost:3000/savedQuestion"
+      );
+      if (
+        !test.data ||
+        alreadyAskedSavedQuestion.current.includes(test.savedQuestionID)
+      ) {
+        const { data } = await axios.get("http://localhost:3000/newQuestion");
+        setCurrentQuestion(data);
+      } else {
+        setCurrentQuestion(test);
+      }
+    } else {
+      const { data } = await axios.get("http://localhost:3000/newQuestion");
+      setCurrentQuestion(data);
+    }
+  }, [questionCounter]);
+
+  useEffect(async () => {
     const { data } = await axios.get("http://localhost:3000/newQuestion");
     setCurrentQuestion(data);
-    console.log(JSON.parse(data) + " -------> DATA");
   }, []);
 
   const getOptions = (currentQuestion) => {
-    console.log(currentQuestion);
     let options = [];
     if (currentQuestion.question_type < 3) {
       for (let i = 0; i < 4; i++) {
         options.push(currentQuestion[`option_${i + 1}`]);
-        console.log(
-          currentQuestion[`option_${i + 1}` + " ----> option for loop"]
-        );
       }
     } else if (currentQuestion.question_type === 3) {
-      console.log("in type 3");
       options = ["true", "false"];
     }
-    console.log(options + "  ---> options");
     return options;
   };
 
   const next = async () => {
-    console.log("inside next", currentQuestion);
     let dbAnswer = "";
     if (currentQuestion.savedQuestions) {
-      console.log("in firs if");
+      if (Number(rateRef.current.value)) {
+        await axios.post(
+          `http://localhost:3000/rate/${currentQuestion.savedQuestionID}`,
+          {
+            rate: Number(rateRef.current.value),
+          }
+        );
+      }
       const { data } = await axios.get(
-        `http://localhost:3000/savedAnswer/${currentQuestion.savedQuestion}`
+        `http://localhost:3000/savedAnswer/${currentQuestion.savedQuestionID}` ////
       );
       dbAnswer = data.answer;
-      askedSavedQuestion.push(data.id);
-      console.log("db answer", dbAnswer, "useranswer", userAnswer);
+      alreadyAskedSavedQuestion.current = [
+        ...alreadyAskedSavedQuestion.current,
+        currentQuestion.savedQuestionID,
+      ];
     } else {
-      console.log("in first else");
-      //   axios
-      //     .post("http://localhost:3000/getNewAnswer", currentQuestion)
-      //     .then((result) => {
-      //       console.log(result);
-      //       dbAnswer = result.answer;
-      //     })
-      //     .catch((e) => {
-      //       console.log(e);
-      //     });
+      if (Number(rateRef.current.value)) {
+        const { data } = await axios.post(
+          "http://localhost:3000/savedQuestion",
+          currentQuestion
+        );
 
+        alreadyAskedSavedQuestion.current = [
+          ...alreadyAskedSavedQuestion.current,
+          data.id,
+        ];
+        await axios.post(`http://localhost:3000/rate/${data.id}`, {
+          rate: Number(rateRef.current.value),
+        });
+      }
       const { data } = await axios.post(
         "http://localhost:3000/getNewAnswer",
         currentQuestion
       );
-      console.log(3333333333333333);
+
       dbAnswer = data.answer;
-      console.log("db answer", dbAnswer, "useranswer", userAnswer);
     }
     if (dbAnswer === userAnswer) {
       setQuestionScore(100);
-      setTotalScore(totalScore + 100);
-      console.log("65");
+      setTotalScore((totalScore) => totalScore + 100);
     } else {
       setQuestionScore(0);
       setMistakeCounter((mistakeCounter) => ++mistakeCounter);
-      console.log("68");
     }
-    console.log("come here");
-    const { data } = await axios.get("http://localhost:3000/newQuestion");
-    console.log(data);
-    setCurrentQuestion(data);
-    console.log("come here");
+    rateRef.current.value = 0;
+    setQuestionCounter((questionCounter) => ++questionCounter); ////////////////change
+    setUserAnswer("");
   };
 
   return (
     <div>
       game
-      <h1>שאלה</h1>
-      <div>{currentQuestion.question}</div>
+      <h1>Question number- {questionCounter}</h1>
+      <h1>QUESTION</h1>
+      <select id="select" onChange={() => {}} ref={rateRef} name="rate">
+        <option value={0}></option>
+        <option value={1}>1</option>
+        <option value={2}>2</option>
+        <option value={3}>3</option>
+        <option value={4}>4</option>
+        <option value={5}>5</option>
+      </select>
+      <div id="question_num"> qution number: {currentQuestion.question}</div>
       <div id="options-container">
-        {/* {getOptions(currentQuestion).map((option) => {
+        {getOptions(currentQuestion).map((option) => {
           return (
             <div
               onClick={() => {
                 setUserAnswer(option);
-                console.log(option);
-                console.log(userAnswer);
               }}
             >
               {option}
             </div>
           );
-        })} */}
+        })}
       </div>
       <button id="send-button" onClick={next}>
         send
       </button>
-      <div>your choise: {userAnswer}</div>
+      {/* <p>mistakes counter {mistakeCounter}</p> */}
+      <div id="user-choise">your choise: {userAnswer}</div>
+      <div id="game-life">
+        You got {mistakeCounter === 0 ? 3 : mistakeCounter === 1 ? 2 : 1} life
+        left
+      </div>
       <PlayerScore questionScore={questionScore} totalScore={totalScore} />
     </div>
   );
