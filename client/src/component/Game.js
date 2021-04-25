@@ -125,6 +125,7 @@ export default function Game({ history, playerName }) {
     }
     rateRef.current.value = 0;
     setQuestionCounter((questionCounter) => ++questionCounter); ////////////////change
+    setUserAnswer("");
   };
 
   return (

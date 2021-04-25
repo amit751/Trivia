@@ -160,10 +160,7 @@ app.get("/savedQuestion", (req, res) => {
       const savedQuestions = savedQuestionsJson.map((result) =>
         result.toJSON()
       );
-      console.log(
-        "egggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
-        savedQuestions
-      );
+
       if (savedQuestions.toString() === [].toString()) {
         return res.json({ data: false });
       } else {

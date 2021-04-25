@@ -22,6 +22,7 @@ export default function WelcomePage({ setPlayerName }) {
           START GAME
         </button>
       </Link>
+      <Link to="/TableScore">Table score</Link>
     </div>
   );
 }
