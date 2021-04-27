@@ -132,16 +132,20 @@ export default function Game({ history, playerName }) {
   return (
     <div className="game-body">
       <h1 className="question-counter">Question number- {questionCounter}</h1>
-      <span>rate this question: </span>
+      <div id="rating">
+        <span>rate this question: </span>
+        <span className="custom-select">
+          <select onChange={() => {}} id="select" ref={rateRef}>
+            <option value={0}></option>
+            <option value={1}>1</option>
+            <option value={2}>2</option>
+            <option value={3}>3</option>
+            <option value={4}>4</option>
+            <option value={5}>5</option>
+          </select>
+        </span>
+      </div>
 
-      <select id="select" onChange={() => {}} ref={rateRef} name="rate">
-        <option value={0}></option>
-        <option value={1}>1</option>
-        <option value={2}>2</option>
-        <option value={3}>3</option>
-        <option value={4}>4</option>
-        <option value={5}>5</option>
-      </select>
       <div className="question-box">
         <div id="question">{currentQuestion.question}</div>
         <div id="options-container">

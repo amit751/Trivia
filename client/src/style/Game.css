@@ -1,7 +1,7 @@
 .game-body {
   width: 100%;
   height: 100vh;
-  background-color: #6d60e4;
+  background-color: #da2020;
   font-size: 1.8em;
   font-family: "Gill Sans", "Gill Sans MT", "Calibri", "Trebuchet MS",
     sans-serif;
@@ -12,9 +12,11 @@
 }
 
 .game-body .question-box {
-  width: 70%;
-  height: 60vh;
-  background-color: #9f73e6;
+  min-width: 70%;
+  min-height: 60vh;
+  height: fit-content;
+  width: fit-content;
+  background-color: #4a75ee;
   margin: auto;
   padding-top: 20px;
   border-radius: 20px;
@@ -25,15 +27,26 @@
   margin-bottom: 50px;
 }
 .game-body .option {
-  margin-top: 10px;
+  width: fit-content;
+  /* margin-top: 10px; */
+  margin: auto;
+  padding: 1rem;
+  text-align: center;
+  font-size: xx-large;
+}
+.game-body .option:hover {
+  background-color: azure;
 }
 .game-body .option:hover {
   cursor: pointer;
 }
 
 .game-body #select {
-  background-color: #6d60e4;
+  background-color: #eb2e2e;
   border: none;
+  font-size: xxx-large;
+  color: aqua;
+  font-weight: 700;
 }
 
 .game-body #send-button {
@@ -41,14 +54,15 @@
   padding-left: 10px;
   padding-right: 10px;
   font-size: 1.6rem;
-  color: #598cda;
+  color: #fd117ff3;
   border: none;
-  background-color: #46529d5e;
-  margin-top: 20px;
+  background-color: #2fff52;
+  /* margin-top: 20px; */
   cursor: pointer;
+  margin: 2rem;
 }
 .game-body #send-button:hover {
-  opacity: 0.7;
+  opacity: 1;
 }
 .game-body #game-life {
   margin-top: 10 px;
@@ -61,4 +75,10 @@
   border: black solid 3px;
   border-radius: 8px;
   margin-top: 2rem;
+}
+.game-body #user-choise {
+  margin-bottom: 1.5rem;
+}
+.game-body #rating {
+  font-size: 1.6em;
 }

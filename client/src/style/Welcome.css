@@ -37,9 +37,9 @@
   background-color: blueviolet;
 }
 #welcome-component #name {
-  position: absolute;
-  left: 48rem;
+  /* left: 48rem; */
   font-size: 2em;
+  margin-right: 2rem;
 }
 #welcome-component button:hover {
   font-size: xxx-large;
@@ -47,4 +47,5 @@
 .headline {
   margin-top: 5rem;
   font-size: xxx-large;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
 }
