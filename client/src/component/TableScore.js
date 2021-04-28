@@ -10,7 +10,6 @@ import axios from "axios";
 import "../style/TableScore.css";
 
 export default function TableScore({ history, playerName }) {
-  console.log(playerName);
   const [tableScore, setTableScore] = useState([]);
   useEffect(() => {
     axios.get("http://localhost:3000/players").then(({ data }) => {

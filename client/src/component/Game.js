@@ -4,7 +4,6 @@ import PlayerScore from "./PlayerScore";
 import "../style/Game.css";
 
 export default function Game({ history, playerName }) {
-  console.log(playerName);
   const alreadyAskedSavedQuestion = useRef([]);
   const [currentQuestion, setCurrentQuestion] = useState({
     question: "",
@@ -22,15 +21,12 @@ export default function Game({ history, playerName }) {
 
   useEffect(() => {
     if (mistakeCounter === 3) {
-      console.log(playerName, "   ->playerName");
-      console.log(totalScore, "  ->totalScore");
       axios
         .post("http://localhost:3000/players", {
           name: playerName,
           score: totalScore,
         })
         .then((result) => {
-          console.log(result);
           history.push("/TableScore");
         })
         .catch((e) => {
