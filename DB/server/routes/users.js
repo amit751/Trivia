@@ -1,3 +1,4 @@
+require("dotenv").config;
 const { Router } = require("express");
 const users = Router();
 const { hashSync, compare } = require("bcrypt");
@@ -17,36 +18,38 @@ users.post("/register", async (req, res) => {
     return res.status(409).send("user already exists");
   }
   const hashedPassword = hashSync(password, 10);
-  //   Users.
+  return Users.create(
+    { email, name, password: hashedPassword, is_admin: false },
+    { fields: ["email", "name", "password", "is_admin"] }
+  ).then((results) => res.status(201).send("Register Success"));
 });
 
-// users.post("/register", (req, res) => {
-//     const { email, name, password } = req.body;
-//     // Check if user exists
-//     const checkUser = USERS.find((user) => email === user.email);
-//     // If user exists, send appropriate response
-//     if (checkUser) {
-//       return res.status(409).send("user already exists");
-//     }
-//     // If user does not exist, create it:
-//     // Hash password
-//     const hashedPassword = hashSync(password, 10);
-//     // Adding user to 'DB'
-//     USERS.push({
-//       email,
-//       name,
-//       password: hashedPassword,
-//       isAdmin: false,
-//     });
-//     // Adding information to 'DB'
-//     INFORMATION.push({
-//       email,
-//       info: `${name} info`,
-//     });
-//     res.status(201).send("Register Success");
-//   });
+//log in
+users.post("/login", async (req, res) => {
+  const { name, password } = req.body;
 
-//log in -
+  const user = await Users.findOne({
+    where: { name },
+  });
+
+  if (!user.length) {
+    return res.status(403).send("username or password incorrect");
+  }
+
+  try {
+    const isPasswordCorrect = await compare(password, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(403).send("username or password incorrect");
+    }
+
+    //continue from here
+  } catch (error) {
+    if (error) {
+      console.log(error);
+    }
+  }
+});
+
 //log out
 
 module.exports = users;

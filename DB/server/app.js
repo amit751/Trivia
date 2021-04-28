@@ -7,6 +7,7 @@ const players = require("./routes/players");
 const rate = require("./routes/rate");
 const savedAnswer = require("./routes/savedAnswer");
 const savedQuestion = require("./routes/savedQuestion");
+const users = require("./routes/users");
 
 const app = express();
 
@@ -19,5 +20,6 @@ app.use("/players", players);
 app.use("/rate", rate);
 app.use("/savedAnswer", savedAnswer);
 app.use("/savedQuestion", savedQuestion);
+app.use("/users", users);
 
 module.exports = app;
