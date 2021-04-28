@@ -20,6 +20,7 @@
   margin: auto;
   padding-top: 20px;
   border-radius: 20px;
+  box-shadow: 5px 5px 15px 5px #444444;
 }
 
 .game-body #question {
@@ -57,7 +58,6 @@
   color: #fd117ff3;
   border: none;
   background-color: #2fff52;
-  /* margin-top: 20px; */
   cursor: pointer;
   margin: 2rem;
 }
@@ -69,7 +69,7 @@
 }
 
 .game-body .player-score {
-  /* position: absolute; */
+  position: absolute;
   top: 10px;
   left: 10px;
   border: black solid 3px;

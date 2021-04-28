@@ -9,6 +9,7 @@
   width: 60%;
   height: 20rem;
   border-radius: 0.1em;
+  box-shadow: 5px 5px 15px 5px #444444;
 }
 
 #welcome-component #player-name {
