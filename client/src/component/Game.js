@@ -125,7 +125,7 @@ export default function Game({ history, playerName }) {
       setMistakeCounter((mistakeCounter) => ++mistakeCounter);
     }
     rateRef.current.value = 0;
-    setQuestionCounter((questionCounter) => ++questionCounter); ////////////////change
+    setQuestionCounter((questionCounter) => ++questionCounter);
     setUserAnswer("");
   };
 
@@ -161,13 +161,15 @@ export default function Game({ history, playerName }) {
         <button id="send-button" onClick={next}>
           send
         </button>
+        <div id="user-choise">your choice is: {userAnswer}</div>
       </div>
-      <div id="user-choise">your choise: {userAnswer}</div>
       <div id="game-life">
-        You got {mistakeCounter === 0 ? 3 : mistakeCounter === 1 ? 2 : 1} life
-        left
+        You got {mistakeCounter === 0 ? 3 : mistakeCounter === 1 ? 2 : 1}
+        {mistakeCounter === 2 ? " life" : " lifes"} left
       </div>
-      <PlayerScore questionScore={questionScore} totalScore={totalScore} />
+      <div className="player-score">
+        <PlayerScore questionScore={questionScore} totalScore={totalScore} />
+      </div>
     </div>
   );
 }
