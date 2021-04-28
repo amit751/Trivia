@@ -5,7 +5,7 @@ export default function PlayerScore({ questionScore, totalScore }) {
   return (
     <div id="display-score">
       <div>
-        you {text} got {questionScore} on this question
+        you are {text}! You got {questionScore} on this question
       </div>
       <div>total score {totalScore}</div>
     </div>

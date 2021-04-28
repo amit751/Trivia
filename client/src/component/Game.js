@@ -4,7 +4,6 @@ import PlayerScore from "./PlayerScore";
 import "../style/Game.css";
 
 export default function Game({ history, playerName }) {
-  console.log(playerName);
   const alreadyAskedSavedQuestion = useRef([]);
   const [currentQuestion, setCurrentQuestion] = useState({
     question: "",
@@ -22,15 +21,12 @@ export default function Game({ history, playerName }) {
 
   useEffect(() => {
     if (mistakeCounter === 3) {
-      console.log(playerName, "   ->playerName");
-      console.log(totalScore, "  ->totalScore");
       axios
         .post("http://localhost:3000/players", {
           name: playerName,
           score: totalScore,
         })
         .then((result) => {
-          console.log(result);
           history.push("/TableScore");
         })
         .catch((e) => {
@@ -132,16 +128,20 @@ export default function Game({ history, playerName }) {
   return (
     <div className="game-body">
       <h1 className="question-counter">Question number- {questionCounter}</h1>
-      <span>rate this question: </span>
+      <div id="rating">
+        <span>rate this question: </span>
+        <span className="custom-select">
+          <select onChange={() => {}} id="select" ref={rateRef}>
+            <option value={0}></option>
+            <option value={1}>1</option>
+            <option value={2}>2</option>
+            <option value={3}>3</option>
+            <option value={4}>4</option>
+            <option value={5}>5</option>
+          </select>
+        </span>
+      </div>
 
-      <select id="select" onChange={() => {}} ref={rateRef} name="rate">
-        <option value={0}></option>
-        <option value={1}>1</option>
-        <option value={2}>2</option>
-        <option value={3}>3</option>
-        <option value={4}>4</option>
-        <option value={5}>5</option>
-      </select>
       <div className="question-box">
         <div id="question">{currentQuestion.question}</div>
         <div id="options-container">
@@ -162,13 +162,13 @@ export default function Game({ history, playerName }) {
           send
         </button>
         <div id="user-choise">your choice is: {userAnswer}</div>
+        <div className="player-score">
+          <PlayerScore questionScore={questionScore} totalScore={totalScore} />
+        </div>
       </div>
       <div id="game-life">
         You got {mistakeCounter === 0 ? 3 : mistakeCounter === 1 ? 2 : 1}
         {mistakeCounter === 2 ? " life" : " lifes"} left
-      </div>
-      <div className="player-score">
-        <PlayerScore questionScore={questionScore} totalScore={totalScore} />
       </div>
     </div>
   );

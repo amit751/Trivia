@@ -10,7 +10,6 @@ import axios from "axios";
 import "../style/TableScore.css";
 
 export default function TableScore({ history, playerName }) {
-  console.log(playerName);
   const [tableScore, setTableScore] = useState([]);
   useEffect(() => {
     axios.get("http://localhost:3000/players").then(({ data }) => {
@@ -20,6 +19,11 @@ export default function TableScore({ history, playerName }) {
   return (
     <div id="table-component">
       <h1>table score</h1>
+      <div id="link-container">
+        <Link to="/">
+          <div className="link">start game</div>
+        </Link>
+      </div>
       <div id="table-container">
         <table id="table">
           <tr>
@@ -29,10 +33,10 @@ export default function TableScore({ history, playerName }) {
           </tr>
           {tableScore.map((player, index) =>
             player.name === playerName ? (
-              <tr style={{ backgroundColor: `yellow` }}>
-                <td>{player.name}</td>
-                <td>{player.score}</td>
-                <td>{index + 1}</td>
+              <tr className="current-player-tr">
+                <td className="current-player-tr">{player.name}</td>
+                <td className="current-player-tr">{player.score}</td>
+                <td className="current-player-tr">{index + 1}</td>
               </tr>
             ) : (
               <tr>
@@ -44,11 +48,7 @@ export default function TableScore({ history, playerName }) {
           )}
         </table>
       </div>
-      <div id="link-container">
-        <Link to="/">
-          <div className="link">start game</div>
-        </Link>
-      </div>
     </div>
   );
 }
+// style={{ backgroundColor: `yellow` }}
