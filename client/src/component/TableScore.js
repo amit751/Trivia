@@ -51,4 +51,3 @@ export default function TableScore({ history, playerName }) {
     </div>
   );
 }
-// style={{ backgroundColor: `yellow` }}
