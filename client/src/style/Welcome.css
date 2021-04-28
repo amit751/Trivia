@@ -1,0 +1,51 @@
+#welcome-component {
+  margin: auto;
+  background-color: brown;
+  margin-top: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  text-align: center;
+  width: 60%;
+  height: 20rem;
+  border-radius: 0.1em;
+}
+
+#welcome-component #player-name {
+  border: none;
+  height: 2rem;
+  align-self: center;
+}
+
+#welcome-component button {
+  border: none;
+  background-color: cornflowerblue;
+  font-size: xx-large;
+}
+#welcome-component #table-link {
+  color: beige;
+}
+#welcome-component #table-link {
+  text-decoration: none;
+  background-color: chocolate;
+  height: 3rem;
+  font-size: xx-large;
+  width: 100%;
+}
+#welcome-component #table-link:hover {
+  color: aliceblue;
+  background-color: blueviolet;
+}
+#welcome-component #name {
+  /* left: 48rem; */
+  font-size: 2em;
+  margin-right: 2rem;
+}
+#welcome-component button:hover {
+  font-size: xxx-large;
+}
+.headline {
+  margin-top: 5rem;
+  font-size: xxx-large;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}

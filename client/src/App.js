@@ -1,25 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useRef, useEffect, useState, useMemo, useContext } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Switch,
+  Redirect,
+} from "react-router-dom";
+import WelcomePage from "./component/welcomePage";
+import Game from "./component/Game";
+import TableScore from "./component/TableScore";
 
 function App() {
+  const [playerName, setPlayerName] = useState();
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Router>
+        <Switch>
+          <Route
+            exact
+            path="/Game"
+            render={(props) => <Game {...props} playerName={playerName} />}
+          />
+          <Route
+            path="/"
+            exact
+            render={(props) => (
+              <WelcomePage {...props} setPlayerName={setPlayerName} />
+            )}
+          />
+          <Route
+            path="/TableScore"
+            exact
+            render={(props) => (
+              <TableScore {...props} playerName={playerName} />
+            )}
+          />
+        </Switch>
+      </Router>
     </div>
   );
 }
 
 export default App;
+
+// <Route
+//                   path='/game'
+//                   render={(props) => (
+//                     <Game {...props} playerName={playerName} />
+//                   )}
+//                 />
