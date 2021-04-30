@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ path: "../../.env" });
 const { Router } = require("express");
 const users = Router();
 const { hashSync, compare } = require("bcrypt");
@@ -27,6 +27,7 @@ users.post("/register", async (req, res) => {
 
 // //log in
 users.post("/login", async (req, res) => {
+
   const { username, password } = req.body;
   ////////////if there are no usuername or password
   const foundUser = await Users.findOne({
@@ -65,9 +66,10 @@ users.post("/login", async (req, res) => {
   }
 });
 
-users.post("/newtoken", (req, res) => {
-  const refreshToken = req.header["refreshToken"].split(" ")[1];
-  if (!refreshToken) return res.status(400).send("must have a valid token");
+users.post("/newtoken", async (req, res) => {
+  const refreshToken = req.headers["refreshtoken"] ? req.headers["refreshtoken"].split(" ")[1] : null;
+
+  if (!refreshToken) return res.status(400).send("must have a  token");
   const tokenIsValid = await RefreshTokens.findOne({
     where: { refresh_token: refreshToken },
   });
@@ -77,10 +79,9 @@ users.post("/newtoken", (req, res) => {
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
     if (err) return res.status(401).send("invalid refresh token");/////////login willbe require
     //valid
-    const newAccessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "12m",
-    });
-    return res.json({ refreshToken });
+    console.log(user);
+    const newAccessToken = jwt.sign({ username: user.username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "12m" });
+    return res.json({ newAccessToken });
 
   })
 });
@@ -89,9 +90,13 @@ users.post("/newtoken", (req, res) => {
 
 
 //log out
-users.post("/logout", validator, async (req, res) => {
-  const refreshToken = req.header["refreshToken"].split(" ")[1];
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+users.post("/logout", validator, (req, res) => {
+  console.log("after validator");
+  const refreshToken = req.headers["refreshtoken"] ? req.headers["refreshtoken"].split(" ")[1] : null;
+  console.log("in headers : ", req.headers, "refreshtoken : ", refreshToken);
+  if (!refreshToken) return res.status(400).send("must have a  token");
+  console.log("made ittttttttttttttttttttttttttttttttttttttt");
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, user) => {
     if (err) return res.status(401).send("invalid refresh token");/////////login willbe require
     const refreshTokenFromDb = await RefreshTokens.findOne({
       where: { refresh_token: refreshToken },

@@ -1,0 +1,45 @@
+POST  http://localhost:3000/users/register
+Content-Type: application/json
+
+{ 
+    "email": "amit@g.com",
+    "username": "amit",
+    "password" : "123" 
+}
+###
+POST  http://localhost:3000/users/login
+Content-Type: application/json
+
+{ 
+    
+    "username": "amit",
+    "password" : "123" 
+}
+###
+POST  http://localhost:3000/users/newtoken
+Content-Type: application/json
+refreshToken: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXQiLCJpYXQiOjE2MTk3OTEzMjYsImV4cCI6MTYxOTgwNTcyNn0.1irGnkyWhG0s6WTaPvTyTd4sc1wMXRmJRp0geo6zHYk
+
+{ 
+    
+    
+}
+###
+POST http://localhost:3000/users/logout
+Content-Type: application/json
+refreshtoken: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXQiLCJpYXQiOjE2MTk3OTEzMjYsImV4cCI6MTYxOTgwNTcyNn0.1irGnkyWhG0s6WTaPvTyTd4sc1wMXRmJRp0geo6zHYk
+accesstoken: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXQiLCJpYXQiOjE2MTk3OTQxOTksImV4cCI6MTYxOTc5NDkxOX0.WpOUkJBhe_8tvn3xqfuaKVlYKNm_iKfauv644T1xe_8 
+
+{
+
+}
+
+###
+GET  http://localhost:3000/newQuestion
+Content-Type: application/json
+refreshtoken: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXQiLCJpYXQiOjE2MTk3OTEzMjYsImV4cCI6MTYxOTgwNTcyNn0.1irGnkyWhG0s6WTaPvTyTd4sc1wMXRmJRp0geo6zHYk
+accesstoken: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXQiLCJpYXQiOjE2MTk3OTQxOTksImV4cCI6MTYxOTc5NDkxOX0.WpOUkJBhe_8tvn3xqfuaKVlYKNm_iKfauv644T1xe_8 
+
+{
+
+}

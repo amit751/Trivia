@@ -21,7 +21,7 @@ function validator1(req, res, next) {
           if (errRefresh) return res.status(401).send("invalid refresh token");///////////////login willbe require
           //refresh token is good but access token is not
           const newAccessToken = jwt.sign(userRefresh, process.env.ACCESS_TOKEN_SECRET);
-          return res.json({ accessToken: newAccessToken, refreshToken = refreshToken }).status(403);/////require to re-request
+          return res.json({ accessToken: newAccessToken, refreshToken: refreshToken });/////require to re-request
           // req.accessToken = newAccessToken;
           // req.refreshToken = refreshToken;
           // req.user = userRefresh;
@@ -40,4 +40,13 @@ function validator1(req, res, next) {
   }
 }
 
-module.exports = { validator1 };
+function validator(req, res, next) {
+  const accessToken = req.headers["accesstoken"] ? req.headers["accesstoken"].split(" ")[1] : null;
+  if (!accessToken) return res.status(400).send("must have a  token");
+  jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
+    if (err) return res.status(403).send("invalid access token"); /////////////////require to request for a new access token
+    return next();
+  });
+}
+
+module.exports = { validator1, validator };

@@ -8,18 +8,19 @@ const rate = require("./routes/rate");
 const savedAnswer = require("./routes/savedAnswer");
 const savedQuestion = require("./routes/savedQuestion");
 const users = require("./routes/users");
+const { validator } = require("./middlewares/validator");
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-app.use("/getNewAnswer", getNewAnswer);
-app.use("/newQuestion", newQuestion);
-app.use("/players", players);
-app.use("/rate", rate);
-app.use("/savedAnswer", savedAnswer);
-app.use("/savedQuestion", savedQuestion);
+app.use("/getNewAnswer", validator, getNewAnswer);
+app.use("/newQuestion", validator, newQuestion);
+app.use("/players", validator, players);
+app.use("/rate", validator, rate);
+app.use("/savedAnswer", validator, savedAnswer);
+app.use("/savedQuestion", validator, savedQuestion);
 app.use("/users", users);
 
 module.exports = app;
