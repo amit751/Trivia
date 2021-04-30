@@ -95,7 +95,7 @@ users.post("/logout", validator, (req, res) => {
   const refreshToken = req.headers["refreshtoken"] ? req.headers["refreshtoken"].split(" ")[1] : null;
   console.log("in headers : ", req.headers, "refreshtoken : ", refreshToken);
   if (!refreshToken) return res.status(400).send("must have a  token");
-  console.log("made ittttttttttttttttttttttttttttttttttttttt");
+
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, user) => {
     if (err) return res.status(401).send("invalid refresh token");/////////login willbe require
     const refreshTokenFromDb = await RefreshTokens.findOne({
