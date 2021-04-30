@@ -2,7 +2,7 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const { RefreshTokens } = require("../../models");
 
-function validator(req, res, next) {
+function validator1(req, res, next) {
   const refreshToken = req.header["refreshToken"].split(" ")[1];
   const accessToken = req.header["accessToken"].split(" ")[1];
   if (!accessToken || !refreshToken) return res.status(400).send("must have a valid token");
@@ -40,4 +40,4 @@ function validator(req, res, next) {
   }
 }
 
-module.exports = { validator };
+module.exports = { validator1 };

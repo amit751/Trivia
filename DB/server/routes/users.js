@@ -58,22 +58,54 @@ users.post("/login", async (req, res) => {
       },
       { fields: ["refresh_token", "expires_at", "username"] }
     );
-    return res.json({ accessToken, refreshToken, ...userData });
+    return res.json({ accessToken, refreshToken });
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
   }
 });
 
+users.post("/newtoken", (req, res) => {
+  const refreshToken = req.header["refreshToken"].split(" ")[1];
+  if (!refreshToken) return res.status(400).send("must have a valid token");
+  const tokenIsValid = await RefreshTokens.findOne({
+    where: { refresh_token: refreshToken },
+  });
+  if (!tokenIsValid) return res.status(401).send("invalid refresh token");/////////login willbe require
+
+  //check refreshToken
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err) return res.status(401).send("invalid refresh token");/////////login willbe require
+    //valid
+    const newAccessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: "12m",
+    });
+    return res.json({ refreshToken });
+
+  })
+});
+
+
+
+
 //log out
 users.post("/logout", validator, async (req, res) => {
-  const refreshToken = req.refreshToken;
-  RefreshTokens.destroy({
-    where: { refresh_token: refreshToken }
-  }).then((result) => {
-    console.log(result);
-    res.send("deleted successfully");
+  const refreshToken = req.header["refreshToken"].split(" ")[1];
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err) return res.status(401).send("invalid refresh token");/////////login willbe require
+    const refreshTokenFromDb = await RefreshTokens.findOne({
+      where: { refresh_token: refreshToken },
+    });
+    if (!refreshTokenFromDb) return res.status(401).send("invalid refresh token");/////////login willbe require
+    refreshTokenFromDb.destroy().then((result) => {
+      console.log(result);
+      res.send("loggedout successfully");
+    }).catch((error) => {
+      console.log(error);
+      res.status(500).send("unable to delete");
+    })
   })
+
 });
 
 
