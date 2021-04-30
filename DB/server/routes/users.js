@@ -1,17 +1,17 @@
-require("dotenv").config;
+require("dotenv").config();
 const { Router } = require("express");
 const users = Router();
 const { hashSync, compare } = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { Users } = require("../../models");
+const { Users, RefreshTokens } = require("../../models");
 const { Op } = require("sequelize");
 
 //register
 users.post("/register", async (req, res) => {
-  const { email, name, password } = req.body;
+  const { email, username, password } = req.body;
   const alreadyExist = await Users.findAll({
     where: {
-      [Op.or]: [{ email }, { name }],
+      [Op.or]: [{ email }, { username }],
     },
   });
   if (alreadyExist.length) {
@@ -19,37 +19,52 @@ users.post("/register", async (req, res) => {
   }
   const hashedPassword = hashSync(password, 10);
   return Users.create(
-    { email, name, password: hashedPassword, is_admin: false },
-    { fields: ["email", "name", "password", "is_admin"] }
+    { email, username, password: hashedPassword, is_admin: false },
+    { fields: ["email", "username", "password", "is_admin"] }
   ).then((results) => res.status(201).send("Register Success"));
 });
 
-//log in
+// //log in
 users.post("/login", async (req, res) => {
-  const { name, password } = req.body;
+  const { username, password } = req.body;
 
-  const user = await Users.findOne({
-    where: { name },
+  const foundUser = await Users.findOne({
+    where: { username },
   });
 
-  if (!user.length) {
-    return res.status(403).send("username or password incorrect");
+  if (!foundUser) {
+    return res.status(403).send("username is incorrect");
   }
 
   try {
-    const isPasswordCorrect = await compare(password, user.password);
+    const isPasswordCorrect = await compare(password, foundUser.password);
     if (!isPasswordCorrect) {
-      return res.status(403).send("username or password incorrect");
+      return res.status(403).send("password is incorrect");
     }
+    const userData = { username };
+    const accessToken = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: "12m",
+    });
+    const refreshToken = jwt.sign(userData, process.env.REFRESH_TOKEN_SECRET, {
+      expiresIn: "4h",
+    });
 
-    //continue from here
+    RefreshTokens.create(
+      {
+        refresh_token: refreshToken,
+        expires_at: new Date().getTime() / 1000 + 14400,
+        username,
+      },
+      { fields: ["refresh_token", "expires_at", "username"] }
+    );
+    return res.json({ accessToken, refreshToken, ...userData });
   } catch (error) {
-    if (error) {
-      console.log(error);
-    }
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
 //log out
+users.post("/logout", async (req, res) => {});
 
 module.exports = users;
