@@ -5,6 +5,7 @@ const { hashSync, compare } = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Users, RefreshTokens } = require("../../models");
 const { Op } = require("sequelize");
+const { validator } = require("../middlewares/validator");
 
 //register
 users.post("/register", async (req, res) => {
@@ -21,25 +22,25 @@ users.post("/register", async (req, res) => {
   return Users.create(
     { email, username, password: hashedPassword, is_admin: false },
     { fields: ["email", "username", "password", "is_admin"] }
-  ).then((results) => res.status(201).send("Register Success"));
+  ).then((result) => { return res.status(201).send("Register Success") });
 });
 
 // //log in
 users.post("/login", async (req, res) => {
   const { username, password } = req.body;
-
+  ////////////if there are no usuername or password
   const foundUser = await Users.findOne({
     where: { username },
   });
 
   if (!foundUser) {
-    return res.status(403).send("username is incorrect");
+    return res.status(409).send("username is incorrect");
   }
 
   try {
     const isPasswordCorrect = await compare(password, foundUser.password);
     if (!isPasswordCorrect) {
-      return res.status(403).send("password is incorrect");
+      return res.status(409).send("password is incorrect");
     }
     const userData = { username };
     const accessToken = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET, {
@@ -65,6 +66,15 @@ users.post("/login", async (req, res) => {
 });
 
 //log out
-users.post("/logout", async (req, res) => {});
+users.post("/logout", validator, async (req, res) => {
+  const refreshToken = req.refreshToken;
+  RefreshTokens.destroy({
+    where: { refresh_token: refreshToken }
+  }).then((result) => {
+    console.log(result);
+    res.send("deleted successfully");
+  })
+});
+
 
 module.exports = users;
