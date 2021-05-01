@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState, useMemo, useContext } from "react";
-import axios from "axios";
+import React, { useRef, useEffect, useState, } from "react";
+
 import PlayerScore from "./PlayerScore";
 import "../style/Game.css";
 import Network from "../networkWarper";
@@ -38,23 +38,33 @@ export default function Game({ history, playerName }) {
   }, [mistakeCounter]);
 
   useEffect(async () => {
-    if (questionCounter % 3 === 0) {
-      const test = await Network("http://localhost:3000/savedQuestion", "GET");////////
-      if (!test.data || alreadyAskedSavedQuestion.current.includes(test.savedQuestionID)) {
-        const data = await Network("http://localhost:3000/newQuestion", "GET");/////
-        setCurrentQuestion(data);
+    try {
+
+      if (questionCounter % 3 === 0) {
+        const test = await Network("http://localhost:3000/savedQuestion", "GET");////////
+        if (!test.data || alreadyAskedSavedQuestion.current.includes(test.savedQuestionID)) {
+          const data = await Network("http://localhost:3000/newQuestion", "GET");/////
+          setCurrentQuestion(data);
+        } else {
+          setCurrentQuestion(test);
+        }
       } else {
-        setCurrentQuestion(test);
+        const data = await Network("http://localhost:3000/newQuestion", "GET");////////
+        setCurrentQuestion(data);
       }
-    } else {
-      const data = await Network("http://localhost:3000/newQuestion", "GET");////////
-      setCurrentQuestion(data);
+    } catch (error) {
+      console.log(error, "try & catch");
     }
   }, [questionCounter]);
 
   useEffect(async () => {
-    const data = await Network("http://localhost:3000/newQuestion", "GET");////////
-    setCurrentQuestion(data);
+    try {
+      const data = await Network("http://localhost:3000/newQuestion", "GET");////////
+      setCurrentQuestion(data);
+
+    } catch (e) {
+      console.log(e, "try & catch");
+    }
   }, []);
 
   const getOptions = (currentQuestion) => {
@@ -149,7 +159,13 @@ export default function Game({ history, playerName }) {
             );
           })}
         </div>
-        <button id="send-button" onClick={next}>
+        <button id="send-button" onClick={() => {
+          try {
+            next();
+          } catch (e) {
+            console.log(e, "try & catch");
+          }
+        }}>
           send
         </button>
         <div id="user-choise">your choice is: {userAnswer}</div>

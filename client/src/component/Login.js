@@ -26,6 +26,7 @@ export default function Login() {
         });
         Cookies.remove("refreshToken");
         Cookies.remove("accessToken");
+        history.push("/");
 
     }
     const handleClick = () => {

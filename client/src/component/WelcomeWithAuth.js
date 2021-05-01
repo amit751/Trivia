@@ -1,10 +1,8 @@
 import React from 'react'
 import {
-    BrowserRouter as Router,
-    Route,
+
     Link,
-    Switch,
-    Redirect,
+
 } from "react-router-dom";
 export default function WelcomeWithAuth() {
     return (

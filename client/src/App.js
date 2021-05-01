@@ -1,12 +1,12 @@
-import React, { useRef, useEffect, useState, useMemo, useContext } from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
-  Link,
+
   Switch,
-  Redirect,
+
 } from "react-router-dom";
-import WelcomePage from "./component/WelcomePage";
+// import WelcomePage from "./component/WelcomePage";
 import Game from "./component/Game";
 import TableScore from "./component/TableScore";
 import WelcomeWithAuth from "./component/WelcomeWithAuth";
@@ -23,13 +23,13 @@ function App() {
             path="/Game"
             render={(props) => <Game {...props} playerName={playerName} />}
           />
-          <Route
+          {/* <Route
             path="/WelcomePage"
             exact
             render={(props) => (
               <WelcomePage {...props} setPlayerName={setPlayerName} />
             )}
-          />
+          /> */}
           <Route
             path="/"
             exact

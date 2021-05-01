@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import {
-  BrowserRouter as Router,
-  Route,
+
+
   Link,
-  Switch,
-  Redirect,
+
 } from "react-router-dom";
 import axios from "axios";
 import "../style/TableScore.css";
