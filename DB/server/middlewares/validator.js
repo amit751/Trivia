@@ -41,7 +41,7 @@ function validator1(req, res, next) {
 }
 
 function validator(req, res, next) {
-  console.log(req.headers["accesstoken"], "hiannnn");
+
   const accessToken = req.headers["accesstoken"] ? req.headers["accesstoken"].split(" ")[1] : null;
 
   if (accessToken == null) return res.status(400).send("must have a  token ");

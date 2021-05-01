@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, useMemo, useContext } from "react";
 import axios from "axios";
 import PlayerScore from "./PlayerScore";
 import "../style/Game.css";
+import Network from "../networkWarper";
 
 export default function Game({ history, playerName }) {
   const alreadyAskedSavedQuestion = useRef([]);
@@ -21,11 +22,12 @@ export default function Game({ history, playerName }) {
 
   useEffect(() => {
     if (mistakeCounter === 3) {
-      axios
-        .post("http://localhost:3000/players", { ///////////////////////////////////////////
-          name: playerName,
-          score: totalScore,
-        })
+      // axios
+      //   .post("http://localhost:3000/players", { ///////////////////////////////////////////
+      //     name: playerName,
+      //     score: totalScore,
+      //   })
+      Network("http://localhost:3000/players", "POST", { name: playerName, score: totalScore })
         .then((result) => {
           history.push("/TableScore");
         })
@@ -37,26 +39,21 @@ export default function Game({ history, playerName }) {
 
   useEffect(async () => {
     if (questionCounter % 3 === 0) {
-      const { data: test } = await axios.get(
-        "http://localhost:3000/savedQuestion"///////////////////////////////////////
-      );
-      if (
-        !test.data ||
-        alreadyAskedSavedQuestion.current.includes(test.savedQuestionID)
-      ) {
-        const { data } = await axios.get("http://localhost:3000/newQuestion");////////////////////////////////
+      const test = await Network("http://localhost:3000/savedQuestion", "GET");////////
+      if (!test.data || alreadyAskedSavedQuestion.current.includes(test.savedQuestionID)) {
+        const data = await Network("http://localhost:3000/newQuestion", "GET");/////
         setCurrentQuestion(data);
       } else {
         setCurrentQuestion(test);
       }
     } else {
-      const { data } = await axios.get("http://localhost:3000/newQuestion");///////////////////////
+      const data = await Network("http://localhost:3000/newQuestion", "GET");////////
       setCurrentQuestion(data);
     }
   }, [questionCounter]);
 
   useEffect(async () => {
-    const { data } = await axios.get("http://localhost:3000/newQuestion");/////////////////////////////////////
+    const data = await Network("http://localhost:3000/newQuestion", "GET");////////
     setCurrentQuestion(data);
   }, []);
 
@@ -76,16 +73,10 @@ export default function Game({ history, playerName }) {
     let dbAnswer = "";
     if (currentQuestion.savedQuestions) {
       if (Number(rateRef.current.value)) {
-        await axios.post(
-          `http://localhost:3000/rate/${currentQuestion.savedQuestionID}`,////////////////////////////////
-          {
-            rate: Number(rateRef.current.value),
-          }
-        );
+        await Network(`http://localhost:3000/rate/${currentQuestion.savedQuestionID}`, "POST",
+          { rate: Number(rateRef.current.value) })////////////////////////////////
       }
-      const { data } = await axios.get(
-        `http://localhost:3000/savedAnswer/${currentQuestion.savedQuestionID}` //////////////////////////////
-      );
+      const data = await Network(`http://localhost:3000/savedAnswer/${currentQuestion.savedQuestionID}`, "GET");//////////////////////////////
       dbAnswer = data.answer;
       alreadyAskedSavedQuestion.current = [
         ...alreadyAskedSavedQuestion.current,
@@ -93,8 +84,8 @@ export default function Game({ history, playerName }) {
       ];
     } else {
       if (Number(rateRef.current.value)) {
-        const { data } = await axios.post(
-          "http://localhost:3000/savedQuestion",/////////////////////////////////////
+        const data = await Network(
+          "http://localhost:3000/savedQuestion", "POST",/////////////////////////////////////
           currentQuestion
         );
 
@@ -102,12 +93,12 @@ export default function Game({ history, playerName }) {
           ...alreadyAskedSavedQuestion.current,
           data.id,
         ];
-        await axios.post(`http://localhost:3000/rate/${data.id}`, {///////////////////////////////////
+        await Network(`http://localhost:3000/rate/${data.id}`, "POST", {///////////////////////////////////
           rate: Number(rateRef.current.value),
         });
       }
-      const { data } = await axios.post(
-        "http://localhost:3000/getNewAnswer",////////////////////////////////////////
+      const data = await Network(
+        "http://localhost:3000/getNewAnswer", "POST",////////////////////////////////////////
         currentQuestion
       );
 

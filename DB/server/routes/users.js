@@ -45,7 +45,7 @@ users.post("/login", async (req, res) => {
     }
     const userData = { username };
     const accessToken = jwt.sign(userData, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "12m",
+      expiresIn: "10s",
     });
     const refreshToken = jwt.sign(userData, process.env.REFRESH_TOKEN_SECRET, {
       expiresIn: "4h",
@@ -68,7 +68,8 @@ users.post("/login", async (req, res) => {
 
 users.post("/newtoken", async (req, res) => {
   const refreshToken = req.headers["refreshtoken"] ? req.headers["refreshtoken"].split(" ")[1] : null;
-
+  console.log(req.headers["refreshtoken"], "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+  console.log(refreshToken, "the one wil be verify");
   if (!refreshToken) return res.status(400).send("must have a  token");
   const tokenIsValid = await RefreshTokens.findOne({
     where: { refresh_token: refreshToken },
@@ -80,7 +81,7 @@ users.post("/newtoken", async (req, res) => {
     if (err) return res.status(401).send("invalid refresh token");/////////login willbe require
     //valid
     console.log(user);
-    const newAccessToken = jwt.sign({ username: user.username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "12m" });
+    const newAccessToken = jwt.sign({ username: user.username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "10s" });
     return res.json({ newAccessToken });
 
   })

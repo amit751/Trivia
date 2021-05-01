@@ -5,12 +5,14 @@ import axios from "axios";
 const headersWithRefresh = () => {
     const accessToken = Cookies.get("accessToken");
     const refreshToken = Cookies.get("refreshToken");
-
-    return {
+    console.log(refreshToken, accessToken, "hhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+    const returning = {
         "accessToken": accessToken && `bearer ${Cookies.get("accessToken")}`,
         "Content-Type": "application/json",
         "refreshToken": refreshToken && `bearer ${Cookies.get("refreshToken")}`
     }
+    console.log(returning);
+    return returning
 }
 const headersWithoutRefresh = () => {
     const accessToken = Cookies.get("accessToken");
@@ -53,15 +55,18 @@ export default async function Network(url, method, body = {}) {
 
 }
 const getRefreshToken = async (config) => {
-    return axios.post("http://localhost:3000/users/newtoken", {}, headersWithRefresh()).then((response) => {
+    console.log(headersWithRefresh(), "33333333333333333333333333333");
+    return axios({
+        method: "POST", url: "http://localhost:3000/users/newtoken", data: {}, headers: headersWithRefresh()
+    }).then((response) => {
 
         console.log(response.status, "status inside then");
         const tokensFromResponse = response.data;
-        Cookies.set("refreshToken", tokensFromResponse.refreshToken);
-        Cookies.set("accessToken", tokensFromResponse.accessToken);
+        console.log("tokensFromResponse before set", tokensFromResponse);
+        Cookies.set("accessToken", tokensFromResponse.newAccessToken);
         return Network(config.url, config.method, config.data);
     }).catch((e) => {
-        console.log(e.response.data);
+        console.log(e.response.data, e.response.status);
         throw { message: e.response.data, status: e.response.status };
 
     });
