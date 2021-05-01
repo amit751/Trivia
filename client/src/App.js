@@ -10,8 +10,8 @@ import WelcomePage from "./component/WelcomePage";
 import Game from "./component/Game";
 import TableScore from "./component/TableScore";
 import WelcomeWithAuth from "./component/WelcomeWithAuth";
-import Login from "./component/Login"
-import SingUp from "./component/SingUp"
+import Login from "./component/Login";
+import SingUp from "./component/SingUp";
 function App() {
   const [playerName, setPlayerName] = useState();
   return (
