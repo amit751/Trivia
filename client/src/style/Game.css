@@ -1,7 +1,7 @@
 .game-body {
   width: 100%;
   height: 100vh;
-  background-color: #da2020;
+  background-color: #5ef7b0;
   font-size: 1.8em;
   font-family: "Gill Sans", "Gill Sans MT", "Calibri", "Trebuchet MS",
     sans-serif;
@@ -16,11 +16,10 @@
   min-height: 60vh;
   height: fit-content;
   width: fit-content;
-  background-color: #4a75ee;
+  background-color: #ee6386;
   margin: auto;
   padding-top: 20px;
   border-radius: 20px;
-  box-shadow: 5px 5px 15px 5px #444444;
 }
 
 .game-body #question {
@@ -58,6 +57,7 @@
   color: #fd117ff3;
   border: none;
   background-color: #2fff52;
+  /* margin-top: 20px; */
   cursor: pointer;
   margin: 2rem;
 }
@@ -69,7 +69,7 @@
 }
 
 .game-body .player-score {
-  position: absolute;
+  /* position: absolute; */
   top: 10px;
   left: 10px;
   border: black solid 3px;
@@ -81,15 +81,4 @@
 }
 .game-body #rating {
   font-size: 1.6em;
-}
-.game-body #game-life {
-  margin-top: 10 px;
-}
-
-.game-body .player-score {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  border: black solid 3px;
-  border-radius: 8px;
 }
