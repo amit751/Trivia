@@ -22,7 +22,7 @@ export default function Game({ history, playerName }) {
   useEffect(() => {
     if (mistakeCounter === 3) {
       axios
-        .post("http://localhost:3000/players", {
+        .post("http://localhost:3000/players", { ///////////////////////////////////////////
           name: playerName,
           score: totalScore,
         })
@@ -38,25 +38,25 @@ export default function Game({ history, playerName }) {
   useEffect(async () => {
     if (questionCounter % 3 === 0) {
       const { data: test } = await axios.get(
-        "http://localhost:3000/savedQuestion"
+        "http://localhost:3000/savedQuestion"///////////////////////////////////////
       );
       if (
         !test.data ||
         alreadyAskedSavedQuestion.current.includes(test.savedQuestionID)
       ) {
-        const { data } = await axios.get("http://localhost:3000/newQuestion");
+        const { data } = await axios.get("http://localhost:3000/newQuestion");////////////////////////////////
         setCurrentQuestion(data);
       } else {
         setCurrentQuestion(test);
       }
     } else {
-      const { data } = await axios.get("http://localhost:3000/newQuestion");
+      const { data } = await axios.get("http://localhost:3000/newQuestion");///////////////////////
       setCurrentQuestion(data);
     }
   }, [questionCounter]);
 
   useEffect(async () => {
-    const { data } = await axios.get("http://localhost:3000/newQuestion");
+    const { data } = await axios.get("http://localhost:3000/newQuestion");/////////////////////////////////////
     setCurrentQuestion(data);
   }, []);
 
@@ -77,14 +77,14 @@ export default function Game({ history, playerName }) {
     if (currentQuestion.savedQuestions) {
       if (Number(rateRef.current.value)) {
         await axios.post(
-          `http://localhost:3000/rate/${currentQuestion.savedQuestionID}`,
+          `http://localhost:3000/rate/${currentQuestion.savedQuestionID}`,////////////////////////////////
           {
             rate: Number(rateRef.current.value),
           }
         );
       }
       const { data } = await axios.get(
-        `http://localhost:3000/savedAnswer/${currentQuestion.savedQuestionID}` ////
+        `http://localhost:3000/savedAnswer/${currentQuestion.savedQuestionID}` //////////////////////////////
       );
       dbAnswer = data.answer;
       alreadyAskedSavedQuestion.current = [
@@ -94,7 +94,7 @@ export default function Game({ history, playerName }) {
     } else {
       if (Number(rateRef.current.value)) {
         const { data } = await axios.post(
-          "http://localhost:3000/savedQuestion",
+          "http://localhost:3000/savedQuestion",/////////////////////////////////////
           currentQuestion
         );
 
@@ -102,12 +102,12 @@ export default function Game({ history, playerName }) {
           ...alreadyAskedSavedQuestion.current,
           data.id,
         ];
-        await axios.post(`http://localhost:3000/rate/${data.id}`, {
+        await axios.post(`http://localhost:3000/rate/${data.id}`, {///////////////////////////////////
           rate: Number(rateRef.current.value),
         });
       }
       const { data } = await axios.post(
-        "http://localhost:3000/getNewAnswer",
+        "http://localhost:3000/getNewAnswer",////////////////////////////////////////
         currentQuestion
       );
 
@@ -131,7 +131,7 @@ export default function Game({ history, playerName }) {
       <div id="rating">
         <span>rate this question: </span>
         <span className="custom-select">
-          <select onChange={() => {}} id="select" ref={rateRef}>
+          <select onChange={() => { }} id="select" ref={rateRef}>
             <option value={0}></option>
             <option value={1}>1</option>
             <option value={2}>2</option>
