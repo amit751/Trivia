@@ -1,18 +1,21 @@
 import Cookies from "js-cookie";
 import axios from "axios";
-// const Cookies = require("js-cookie");
-// const axios = require("axios");
-console.log("start");
+
+
 const headersWithRefresh = () => {
+    const accessToken = Cookies.get("accessToken");
+    const refreshToken = Cookies.get("refreshToken");
+
     return {
-        "accessToken": `bearer ${Cookies.get("accessToken")}`,
+        "accessToken": accessToken && `bearer ${Cookies.get("accessToken")}`,
         "Content-Type": "application/json",
-        "refreshToken": `bearer ${Cookies.get("refreshToken")}`
+        "refreshToken": refreshToken && `bearer ${Cookies.get("refreshToken")}`
     }
 }
 const headersWithoutRefresh = () => {
+    const accessToken = Cookies.get("accessToken");
     return {
-        "accessToken": `bearer ${Cookies.get("accessToken")}`,
+        "accessToken": accessToken && `bearer ${Cookies.get("accessToken")}`,
         "Content-Type": "application/json"
     }
 }
@@ -26,51 +29,42 @@ export default async function Network(url, method, body = {}) {
         data: body,
         headers,
     }
-    axios(config)
+    return axios(config)
         .then(({ data }) => {
             console.log(data);
             return data;
         }).catch((e) => {
+            console.log(e.response);
             switch (e.response.status) {
                 case 403:
                     console.log(403);
                     return getRefreshToken(config);
                 case 400:
                     console.log(400);
-                    return e.response
+                    console.log(e.response.status);
+                    throw { message: e.response.data, status: 400 };
+
                 case 401:
                     console.log(401);
-                    return e.response
+                    console.log(e.response);
+                    throw { message: e.response.data, status: 401 };
             }
         })
 
 }
 const getRefreshToken = async (config) => {
-    axios.post("http://localhost:3000/users/newtoken", {}, headersWithRefresh()).then((response) => {
+    return axios.post("http://localhost:3000/users/newtoken", {}, headersWithRefresh()).then((response) => {
 
-        console.log(response.status);
-        if (response.status !== 200) return response.data;
-        console.log(" 200");
+        console.log(response.status, "status inside then");
         const tokensFromResponse = response.data;
         Cookies.set("refreshToken", tokensFromResponse.refreshToken);
         Cookies.set("accessToken", tokensFromResponse.accessToken);
-        // const {data} = await axios(config);
         return Network(config.url, config.method, config.data);
     }).catch((e) => {
-        return response.data;
+        console.log(e.response.data);
+        throw { message: e.response.data, status: e.response.status };
+
     });
 
 }
 
- // const response = await axios(config);
-    // console.log(response, "the response");
-    // switch (response.status) {
-    //     case 200:
-    //         return response.data;
-    //     case 403:
-    //         return getRefreshToken(config);
-    //     case 400:
-    //         return response.data
-    //     case 401:
-    //         return response.data
-    // }

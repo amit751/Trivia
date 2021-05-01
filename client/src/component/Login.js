@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState, useMemo, useContext } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+
 import Cookies from "js-cookie";
 import { useHistory } from "react-router-dom"
 import Network from "../networkWarper";
@@ -18,9 +18,18 @@ export default function Login() {
 
         allInputs[name].current.value = value
     }
+    const logOut = () => {
+        Network("http://localhost:3000/users/logout", "POST").then((result) => {
+            console.log(result);
+        }).catch((e) => {
+            console.log(e);
+        });
+        Cookies.remove("refreshToken");
+        Cookies.remove("accessToken");
 
+    }
     const handleClick = () => {
-        console.log("posttttttttttt");
+
         axios.post("http://localhost:3000/users/login", { /////////////////////////
             username: usernameInput.current.value,
             password: passwordInput.current.value
@@ -46,7 +55,7 @@ export default function Login() {
     }
     return (
         <div>
-
+            <button onClick={logOut}>logout</button>
             <label>
                 username:
       <input required name="usernameInput" onChange={handleInputChange} ref={usernameInput} />
@@ -63,9 +72,11 @@ export default function Login() {
             <div>
                 test
             <button onClick={() => {
-                    Network("http://localhost:3000/players", "POST", { name: "test", score: 5 }).catch((e) => {
-                        console.log("here");
-                        console.log(e, "eeeeeeeeeeeee", e.response, "response");
+                    Network("http://localhost:3000/players", "POST", { name: "test", score: 5 }).then((result) => {
+                        console.log(result, "this is result inside component");
+                    }).catch((e) => {
+                        console.log("this is errr inside component", e);
+                        console.log("eeeeeeeeeeeee", e.message, "response", e.lineNumber);
                     })
                 }}>testtt</button>
             </div>
