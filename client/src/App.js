@@ -6,10 +6,12 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
-import WelcomePage from "./component/welcomePage";
+import WelcomePage from "./component/WelcomePage";
 import Game from "./component/Game";
 import TableScore from "./component/TableScore";
-
+import WelcomeWithAuth from "./component/WelcomeWithAuth";
+import Login from "./component/Login"
+import SingUp from "./component/SingUp"
 function App() {
   const [playerName, setPlayerName] = useState();
   return (
@@ -22,10 +24,31 @@ function App() {
             render={(props) => <Game {...props} playerName={playerName} />}
           />
           <Route
-            path="/"
+            path="/WelcomePage"
             exact
             render={(props) => (
               <WelcomePage {...props} setPlayerName={setPlayerName} />
+            )}
+          />
+          <Route
+            path="/"
+            exact
+            render={(props) => (
+              <WelcomeWithAuth {...props} setPlayerName={setPlayerName} />
+            )}
+          />
+          <Route
+            path="/login"
+            exact
+            render={(props) => (
+              <Login {...props} setPlayerName={setPlayerName} />
+            )}
+          />
+          <Route
+            path="/singup"
+            exact
+            render={(props) => (
+              <SingUp {...props} setPlayerName={setPlayerName} />
             )}
           />
           <Route
