@@ -15,6 +15,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.get("/permition", validator, (req, res) => {
+    res.send(true);
+});
 app.use("/getNewAnswer", validator, getNewAnswer);
 app.use("/newQuestion", validator, newQuestion);
 app.use("/players", validator, players);

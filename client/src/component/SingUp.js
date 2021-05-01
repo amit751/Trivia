@@ -18,7 +18,7 @@ export default function SingUp() {
     }
     const handleClick = () => {
         console.log("posttttttttttt");
-        axios.post("http://localhost:3000/users/register", {
+        axios.post("http://localhost:3000/users/register", { /////////////////////////
             username: usernameInput.current.value,
             email: emailInput.current.value,
             password: passwordInput.current.value

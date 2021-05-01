@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useHistory } from "react-router-dom"
+import Network from "../networkWarper";
 export default function Login() {
     const usernameInput = useRef("")
     const passwordInput = useRef("")
@@ -20,7 +21,7 @@ export default function Login() {
 
     const handleClick = () => {
         console.log("posttttttttttt");
-        axios.post("http://localhost:3000/users/login", {
+        axios.post("http://localhost:3000/users/login", { /////////////////////////
             username: usernameInput.current.value,
             password: passwordInput.current.value
         }).then(({ data }) => {
@@ -31,7 +32,7 @@ export default function Login() {
             }
             Cookies.set("refreshToken", data.refreshToken);
             Cookies.set("accessToken", data.accessToken);
-            // if(data.refreshToken )
+            // if(data.refreshToken )/////////////////////////////////////axios
             // history.push("/Game");
 
 
@@ -59,6 +60,16 @@ export default function Login() {
                 submit
             </button >
             <div>{message}</div>
+            <div>
+                test
+            <button onClick={() => {
+                    Network("http://localhost:3000/players", "POST", { name: "test", score: 5 }).catch((e) => {
+                        console.log("here");
+                        console.log(e, "eeeeeeeeeeeee", e.response, "response");
+                    })
+                }}>testtt</button>
+            </div>
+
 
         </div>
     )

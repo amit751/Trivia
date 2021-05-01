@@ -12,7 +12,7 @@ import "../style/TableScore.css";
 export default function TableScore({ history, playerName }) {
   const [tableScore, setTableScore] = useState([]);
   useEffect(() => {
-    axios.get("http://localhost:3000/players").then(({ data }) => {
+    axios.get("http://localhost:3000/players").then(({ data }) => { /////////////////////////////////
       setTableScore(data.map((result) => result));
     });
   }, []);
