@@ -27,7 +27,10 @@ export default function Game({ history, playerName }) {
       //     name: playerName,
       //     score: totalScore,
       //   })
-      Network("http://localhost:3000/players", "POST", { name: playerName, score: totalScore })
+      Network("http://localhost:3000/players", "POST", {
+        name: playerName,
+        score: totalScore,
+      })
         .then((result) => {
           history.push("/TableScore");
         })
@@ -39,21 +42,24 @@ export default function Game({ history, playerName }) {
 
   useEffect(async () => {
     if (questionCounter % 3 === 0) {
-      const test = await Network("http://localhost:3000/savedQuestion", "GET");////////
-      if (!test.data || alreadyAskedSavedQuestion.current.includes(test.savedQuestionID)) {
-        const data = await Network("http://localhost:3000/newQuestion", "GET");/////
+      const test = await Network("http://localhost:3000/savedQuestion", "GET"); ////////
+      if (
+        !test.data ||
+        alreadyAskedSavedQuestion.current.includes(test.savedQuestionID)
+      ) {
+        const data = await Network("http://localhost:3000/newQuestion", "GET"); /////
         setCurrentQuestion(data);
       } else {
         setCurrentQuestion(test);
       }
     } else {
-      const data = await Network("http://localhost:3000/newQuestion", "GET");////////
+      const data = await Network("http://localhost:3000/newQuestion", "GET"); ////////
       setCurrentQuestion(data);
     }
   }, [questionCounter]);
 
   useEffect(async () => {
-    const data = await Network("http://localhost:3000/newQuestion", "GET");////////
+    const data = await Network("http://localhost:3000/newQuestion", "GET"); ////////
     setCurrentQuestion(data);
   }, []);
 
@@ -73,10 +79,16 @@ export default function Game({ history, playerName }) {
     let dbAnswer = "";
     if (currentQuestion.savedQuestions) {
       if (Number(rateRef.current.value)) {
-        await Network(`http://localhost:3000/rate/${currentQuestion.savedQuestionID}`, "POST",
-          { rate: Number(rateRef.current.value) })////////////////////////////////
+        await Network(
+          `http://localhost:3000/rate/${currentQuestion.savedQuestionID}`,
+          "POST",
+          { rate: Number(rateRef.current.value) }
+        ); ////////////////////////////////
       }
-      const data = await Network(`http://localhost:3000/savedAnswer/${currentQuestion.savedQuestionID}`, "GET");//////////////////////////////
+      const data = await Network(
+        `http://localhost:3000/savedAnswer/${currentQuestion.savedQuestionID}`,
+        "GET"
+      ); //////////////////////////////
       dbAnswer = data.answer;
       alreadyAskedSavedQuestion.current = [
         ...alreadyAskedSavedQuestion.current,
@@ -85,7 +97,8 @@ export default function Game({ history, playerName }) {
     } else {
       if (Number(rateRef.current.value)) {
         const data = await Network(
-          "http://localhost:3000/savedQuestion", "POST",/////////////////////////////////////
+          "http://localhost:3000/savedQuestion",
+          "POST", /////////////////////////////////////
           currentQuestion
         );
 
@@ -93,12 +106,14 @@ export default function Game({ history, playerName }) {
           ...alreadyAskedSavedQuestion.current,
           data.id,
         ];
-        await Network(`http://localhost:3000/rate/${data.id}`, "POST", {///////////////////////////////////
+        await Network(`http://localhost:3000/rate/${data.id}`, "POST", {
+          ///////////////////////////////////
           rate: Number(rateRef.current.value),
         });
       }
       const data = await Network(
-        "http://localhost:3000/getNewAnswer", "POST",////////////////////////////////////////
+        "http://localhost:3000/getNewAnswer",
+        "POST", ////////////////////////////////////////
         currentQuestion
       );
 
@@ -122,7 +137,7 @@ export default function Game({ history, playerName }) {
       <div id="rating">
         <span>rate this question: </span>
         <span className="custom-select">
-          <select onChange={() => { }} id="select" ref={rateRef}>
+          <select onChange={() => {}} id="select" ref={rateRef}>
             <option value={0}></option>
             <option value={1}>1</option>
             <option value={2}>2</option>
