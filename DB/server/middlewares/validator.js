@@ -41,8 +41,10 @@ function validator1(req, res, next) {
 }
 
 function validator(req, res, next) {
+
   const accessToken = req.headers["accesstoken"] ? req.headers["accesstoken"].split(" ")[1] : null;
-  if (!accessToken) return res.status(400).send("must have a  token");
+
+  if (accessToken == null) return res.status(400).send("must have a  token ");
   jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
     if (err) return res.status(403).send("invalid access token"); /////////////////require to request for a new access token
     return next();
