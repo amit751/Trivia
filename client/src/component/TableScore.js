@@ -1,22 +1,40 @@
 import React, { useEffect, useState } from "react";
-import {
-
-
-  Link,
-
-} from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import "../style/TableScore.css";
+import Network from "../networkWarper";
+import Cookies from "js-cookie";
 
 export default function TableScore({ history, playerName }) {
   const [tableScore, setTableScore] = useState([]);
   useEffect(() => {
-    axios.get("http://localhost:3000/players").then(({ data }) => { /////////////////////////////////
-      setTableScore(data.map((result) => result));
-    });
+    Network("http://localhost:3000/players", "GET")
+      .then((data) => {
+        setTableScore(data.map((result) => result));
+      })
+      .catch((e) => {
+        console.log(e);
+        alert("you are unauthorized");
+        history.push("/");
+      });
   }, []);
+
+  const logOut = () => {
+    Network("http://localhost:3000/users/logout", "POST")
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    Cookies.remove("refreshToken");
+    Cookies.remove("accessToken");
+    history.push("/");
+  };
+
   return (
     <div id="table-component">
+      <button onClick={logOut}>logout</button>
       <h1>table score</h1>
       <div id="link-container">
         <Link to="/">

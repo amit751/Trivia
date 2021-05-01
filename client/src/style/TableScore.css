@@ -11,7 +11,6 @@
   min-height: 52rem;
   border-radius: 0.5rem;
   position: relative;
-  box-shadow: 5px 5px 15px 5px #888888;
 }
 body {
   background-color: #89da59;
@@ -43,13 +42,18 @@ body {
   top: 2rem;
 }
 #table-component .link {
+  margin: auto;
+  padding: 0;
+  top: 0.4em;
   background-color: #89da59;
   border-radius: 0.3em;
+
   width: 8rem;
+  height: 3rem;
   text-align: center;
+  font-size: x-large;
   font-weight: 500;
   color: rgb(255, 255, 255);
-  padding-bottom: 4px;
 }
 #table-component a {
   text-decoration: none;

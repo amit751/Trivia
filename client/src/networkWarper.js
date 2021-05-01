@@ -34,7 +34,6 @@ export default async function Network(url, method, body = {}) {
   };
   return axios(config)
     .then(({ data }) => {
-      console.log(data);
       return data;
     })
     .catch((e) => {

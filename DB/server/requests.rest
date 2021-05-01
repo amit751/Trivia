@@ -18,7 +18,7 @@ Content-Type: application/json
 ###
 POST  http://localhost:3000/users/newtoken
 Content-Type: application/json
-refreshToken: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXQiLCJpYXQiOjE2MTk3OTEzMjYsImV4cCI6MTYxOTgwNTcyNn0.1irGnkyWhG0s6WTaPvTyTd4sc1wMXRmJRp0geo6zHYk
+refreshToken: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXQiLCJpYXQiOjE2MTk4OTYyNzIsImV4cCI6MTYxOTkxMDY3Mn0._IpWovHvKZZchLFCApPZBL42vsCbr-iz7yTZeuwaQqk
 
 { 
     
@@ -42,4 +42,15 @@ accesstoken: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXQ
 
 {
 
+}
+
+###
+POST http://localhost:3000/players
+Content-Type: application/json
+refreshtoken: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXQiLCJpYXQiOjE2MTk4OTcxOTgsImV4cCI6MTYxOTg5NzIwOH0.GkJyxbWoFWB4XXYF_2o45R_T1GzHBt3mH_dQILjkaP4
+accesstoken: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFtaXQiLCJpYXQiOjE2MTk4OTc2MjUsImV4cCI6MTYxOTg5NzYzNX0.7u7sbeC0IWXIcSyygYkl4TiNfsYk5VzhnlarVanMg_M
+
+{
+    "name" : "situ" ,
+    "score" : 9
 }
