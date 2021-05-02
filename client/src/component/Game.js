@@ -1,7 +1,8 @@
-import React, { useRef, useEffect, useState, useMemo, useContext } from "react";
-import axios from "axios";
+import React, { useRef, useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import PlayerScore from "./PlayerScore";
 import "../style/Game.css";
+import Network from "../networkWarper";
 
 export default function Game({ history, playerName }) {
   const alreadyAskedSavedQuestion = useRef([]);
@@ -18,14 +19,25 @@ export default function Game({ history, playerName }) {
   const [mistakeCounter, setMistakeCounter] = useState(0);
   const rateRef = useRef(0);
   const [questionCounter, setQuestionCounter] = useState(1);
+  const logOut = () => {
+    Network("http://localhost:3000/users/logout", "POST")
+      .then((result) => {
+        console.log(result);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    Cookies.remove("refreshToken");
+    Cookies.remove("accessToken");
+    history.push("/");
+  };
 
   useEffect(() => {
     if (mistakeCounter === 3) {
-      axios
-        .post("http://localhost:3000/players", {
-          name: playerName,
-          score: totalScore,
-        })
+      Network("http://localhost:3000/players", "POST", {
+        name: playerName,
+        score: totalScore,
+      })
         .then((result) => {
           history.push("/TableScore");
         })
@@ -36,28 +48,41 @@ export default function Game({ history, playerName }) {
   }, [mistakeCounter]);
 
   useEffect(async () => {
-    if (questionCounter % 3 === 0) {
-      const { data: test } = await axios.get(
-        "http://localhost:3000/savedQuestion"
-      );
-      if (
-        !test.data ||
-        alreadyAskedSavedQuestion.current.includes(test.savedQuestionID)
-      ) {
-        const { data } = await axios.get("http://localhost:3000/newQuestion");
-        setCurrentQuestion(data);
+    try {
+      if (questionCounter % 3 === 0) {
+        const test = await Network(
+          "http://localhost:3000/savedQuestion",
+          "GET"
+        ); ////////
+        if (
+          !test.data ||
+          alreadyAskedSavedQuestion.current.includes(test.savedQuestionID)
+        ) {
+          const data = await Network(
+            "http://localhost:3000/newQuestion",
+            "GET"
+          ); /////
+          setCurrentQuestion(data);
+        } else {
+          setCurrentQuestion(test);
+        }
       } else {
-        setCurrentQuestion(test);
+        const data = await Network("http://localhost:3000/newQuestion", "GET"); ////////
+        setCurrentQuestion(data);
       }
-    } else {
-      const { data } = await axios.get("http://localhost:3000/newQuestion");
-      setCurrentQuestion(data);
+    } catch (error) {
+      console.log(error, "try & catch");
     }
   }, [questionCounter]);
 
   useEffect(async () => {
-    const { data } = await axios.get("http://localhost:3000/newQuestion");
-    setCurrentQuestion(data);
+    try {
+      const data = await Network("http://localhost:3000/newQuestion", "GET"); ////////
+      setCurrentQuestion(data);
+    } catch (e) {
+      console.log(e, "try & catch");
+      history.push("/"); /// unouatorized
+    }
   }, []);
 
   const getOptions = (currentQuestion) => {
@@ -76,16 +101,16 @@ export default function Game({ history, playerName }) {
     let dbAnswer = "";
     if (currentQuestion.savedQuestions) {
       if (Number(rateRef.current.value)) {
-        await axios.post(
+        await Network(
           `http://localhost:3000/rate/${currentQuestion.savedQuestionID}`,
-          {
-            rate: Number(rateRef.current.value),
-          }
-        );
+          "POST",
+          { rate: Number(rateRef.current.value) }
+        ); ////////////////////////////////
       }
-      const { data } = await axios.get(
-        `http://localhost:3000/savedAnswer/${currentQuestion.savedQuestionID}` ////
-      );
+      const data = await Network(
+        `http://localhost:3000/savedAnswer/${currentQuestion.savedQuestionID}`,
+        "GET"
+      ); //////////////////////////////
       dbAnswer = data.answer;
       alreadyAskedSavedQuestion.current = [
         ...alreadyAskedSavedQuestion.current,
@@ -93,8 +118,9 @@ export default function Game({ history, playerName }) {
       ];
     } else {
       if (Number(rateRef.current.value)) {
-        const { data } = await axios.post(
+        const data = await Network(
           "http://localhost:3000/savedQuestion",
+          "POST", /////////////////////////////////////
           currentQuestion
         );
 
@@ -102,12 +128,14 @@ export default function Game({ history, playerName }) {
           ...alreadyAskedSavedQuestion.current,
           data.id,
         ];
-        await axios.post(`http://localhost:3000/rate/${data.id}`, {
+        await Network(`http://localhost:3000/rate/${data.id}`, "POST", {
+          ///////////////////////////////////
           rate: Number(rateRef.current.value),
         });
       }
-      const { data } = await axios.post(
+      const data = await Network(
         "http://localhost:3000/getNewAnswer",
+        "POST", ////////////////////////////////////////
         currentQuestion
       );
 
@@ -127,6 +155,9 @@ export default function Game({ history, playerName }) {
 
   return (
     <div className="game-body">
+      <div>
+        <button onClick={logOut}>logout</button>
+      </div>
       <h1 className="question-counter">Question number- {questionCounter}</h1>
       <div id="rating">
         <span>rate this question: </span>
@@ -158,7 +189,16 @@ export default function Game({ history, playerName }) {
             );
           })}
         </div>
-        <button id="send-button" onClick={next}>
+        <button
+          id="send-button"
+          onClick={() => {
+            try {
+              next();
+            } catch (e) {
+              console.log(e, "try & catch");
+            }
+          }}
+        >
           send
         </button>
         <div id="user-choise">your choice is: {userAnswer}</div>

@@ -1,11 +1,5 @@
-import React, { useRef, useEffect, useState, useMemo, useContext } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  Switch,
-  Redirect,
-} from "react-router-dom";
+import React, { useRef } from "react";
+import { Link } from "react-router-dom";
 import "../style/Welcome.css";
 
 export default function WelcomePage({ setPlayerName }) {

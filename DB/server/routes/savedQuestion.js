@@ -1,6 +1,5 @@
 const { Router } = require("express");
 const savedQuestion = Router();
-
 const { getAnswer, random } = require("../utils/functions.js");
 const { Saved_Questions } = require("../../models");
 
