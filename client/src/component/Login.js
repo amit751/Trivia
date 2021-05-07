@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import axios from "axios";
+import "../style/LoginSass/Login.css";
 
 import Cookies from "js-cookie";
 import { useHistory } from "react-router-dom";
@@ -18,21 +19,10 @@ export default function Login({ setPlayerName }) {
 
     allInputs[name].current.value = value;
   };
-  const logOut = () => {
-    Network("http://localhost:3000/users/logout", "POST")
-      .then((result) => {
-        console.log(result);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-    Cookies.remove("refreshToken");
-    Cookies.remove("accessToken");
-    history.push("/");
-  };
+
   const handleClick = () => {
     axios
-      .post("http://localhost:3000/users/login", {
+      .post("https://hallowed-key-312708.ew.r.appspot.com/users/login", {
         /////////////////////////axios
         username: usernameInput.current.value,
         password: passwordInput.current.value,
@@ -44,7 +34,7 @@ export default function Login({ setPlayerName }) {
         Cookies.set("refreshToken", data.refreshToken);
         Cookies.set("accessToken", data.accessToken);
 
-        Network("http://localhost:3000/permition", "GET")
+        Network("https://hallowed-key-312708.ew.r.appspot.com/permition", "GET")
           .then((result) => {
             console.log(usernameInput.current.value, "yyyyyyyyyyy");
             setPlayerName(usernameInput.current.value);
@@ -65,32 +55,88 @@ export default function Login({ setPlayerName }) {
       });
   };
   return (
-    <div>
-      <div>
-        <button onClick={logOut}>logout</button>
+    <div id="login-component">
+      <div className="login-box">
+        <label>
+          <input
+            required
+            name="usernameInput"
+            onChange={handleInputChange}
+            ref={usernameInput}
+            className="login-input"
+            placeholder="username"
+            type="text"
+          />
+        </label>
+        <br />
+        <label>
+          <input
+            required
+            name="passwordInput"
+            type="password"
+            onChange={handleInputChange}
+            ref={passwordInput}
+            className="login-input"
+            placeholder="password"
+          />
+        </label>
+        <button className="login-button" onClick={handleClick}>
+          Login
+        </button>
+        <div>{message}</div>
       </div>
-      <label>
-        username:
-        <input
-          required
-          name="usernameInput"
-          onChange={handleInputChange}
-          ref={usernameInput}
-        />
-      </label>
-      <br />
-      <label>
-        password:
-        <input
-          required
-          name="passwordInput"
-          type="password"
-          onChange={handleInputChange}
-          ref={passwordInput}
-        />
-      </label>
-      <button onClick={handleClick}>submit</button>
-      <div>{message}</div>
+      <div class="bubbles">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+      </div>
     </div>
   );
 }

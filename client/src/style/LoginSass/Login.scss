@@ -1,0 +1,144 @@
+body {
+  background-image: linear-gradient(120deg, SpringGreen, #598cda);
+  margin: 0;
+}
+
+$bubble-count: 50;
+$sway-type: "sway-left-to-right", "sway-right-to-left";
+
+@function random_range($min, $max) {
+  $rand: random();
+  $random_range: $min + floor($rand * (($max - $min) + 1));
+  @return $random_range;
+}
+
+@function sample($list) {
+  @return nth($list, random(length($list)));
+}
+
+.bubbles {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.bubble {
+  position: absolute;
+  left: var(--bubble-left-offset);
+  bottom: -75%;
+  display: block;
+  width: var(--bubble-radius);
+  height: var(--bubble-radius);
+  border-radius: 50%;
+  animation: float-up var(--bubble-float-duration) var(--bubble-float-delay)
+    ease-in infinite;
+
+  &::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: hsla(183, 94%, 76%, 0.3);
+    border-radius: inherit;
+    animation: var(--bubble-sway-type) var(--bubble-sway-duration)
+      var(--bubble-sway-delay) ease-in-out alternate infinite;
+  }
+
+  @for $i from 0 through $bubble-count {
+    &:nth-child(#{$i}) {
+      --bubble-left-offset: #{random_range(0vw, 100vw)};
+      --bubble-radius: #{random_range(1vw, 10vw)};
+      --bubble-float-duration: #{random_range(6s, 12s)};
+      --bubble-sway-duration: #{random_range(4s, 6s)};
+      --bubble-float-delay: #{random_range(0s, 4s)};
+      --bubble-sway-delay: #{random_range(0s, 4s)};
+      --bubble-sway-type: #{sample($sway-type)};
+    }
+  }
+}
+
+@keyframes float-up {
+  to {
+    transform: translateY(-175vh);
+  }
+}
+
+@keyframes sway-left-to-right {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes sway-right-to-left {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.login-box {
+  background-color: transparent;
+  position: fixed;
+  left: 40%;
+  top: 35%;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+  width: 20%;
+}
+.login-input {
+  width: 15%;
+  height: 4vh;
+  background-color: transparent;
+  border: white solid 3px;
+  border-radius: 4px;
+  text-align: center;
+  outline: none;
+  color: white;
+}
+.login-input::placeholder {
+  text-align: center;
+  color: white;
+  background-color: transparent;
+}
+#login-component .login-input[type="text"] {
+  width: 100px;
+  -webkit-transition: width 0.35s ease-in-out;
+  transition: width 0.35s ease-in-out;
+}
+#login-component .login-input[type="text"]:focus {
+  width: 250px;
+}
+
+#login-component .login-input[type="password"] {
+  width: 100px;
+  -webkit-transition: width 0.35s ease-in-out;
+  transition: width 0.35s ease-in-out;
+}
+#login-component .login-input[type="password"]:focus {
+  width: 250px;
+}
+
+.login-button {
+  width: 50%;
+  margin: 25px auto;
+  height: 7vh;
+  font-size: 1.5rem;
+  background-color: MediumSpringGreen;
+  border: none;
+  border-radius: 4px;
+}
+.login-button:hover {
+  cursor: pointer;
+  opacity: 0.7;
+}

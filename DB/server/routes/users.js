@@ -10,36 +10,46 @@ const { validator } = require("../middlewares/validator");
 //register
 users.post("/register", async (req, res) => {
   const { email, username, password } = req.body;
-  const alreadyExist = await Users.findAll({
-    where: {
-      [Op.or]: [{ email }, { username }],
-    },
-  });
-  if (alreadyExist.length) {
-    return res.status(409).send("user already exists");
+  try {
+    const alreadyExist = await Users.findAll({
+      where: {
+        [Op.or]: [{ email }, { username }],
+      },
+    });
+    if (alreadyExist.length) {
+      return res.status(409).send("user already exists");
+    }
+    const hashedPassword = hashSync(password, 10);
+    return Users.create(
+      { email, username, password: hashedPassword, is_admin: false },
+      { fields: ["email", "username", "password", "is_admin"] }
+    )
+      .then((result) => {
+        return res.status(201).send("Register Success");
+      })
+      .catch((e) => {
+        return res.status(500).send("Register fail");
+      });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).send("Register fail");
   }
-  const hashedPassword = hashSync(password, 10);
-  return Users.create(
-    { email, username, password: hashedPassword, is_admin: false },
-    { fields: ["email", "username", "password", "is_admin"] }
-  ).then((result) => {
-    return res.status(201).send("Register Success");
-  });
 });
 
 // //log in
 users.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  ////////////if there are no usuername or password
-  const foundUser = await Users.findOne({
-    where: { username },
-  });
-
-  if (!foundUser) {
-    return res.status(409).send("username is incorrect");
-  }
-
   try {
+    ////////////if there are no usuername or password
+
+    const foundUser = await Users.findOne({
+      where: { username },
+    });
+
+    if (!foundUser) {
+      return res.status(409).send("username is incorrect");
+    }
+
     const isPasswordCorrect = await compare(password, foundUser.password);
     if (!isPasswordCorrect) {
       return res.status(409).send("password is incorrect");
@@ -61,8 +71,8 @@ users.post("/login", async (req, res) => {
       { fields: ["refresh_token", "expires_at", "username"] }
     );
     return res.json({ accessToken, refreshToken });
-  } catch (error) {
-    console.log(error);
+  } catch (e) {
+    console.log(e);
     res.sendStatus(500);
   }
 });
@@ -72,22 +82,27 @@ users.post("/newtoken", async (req, res) => {
     ? req.headers["refreshtoken"].split(" ")[1]
     : null;
   if (!refreshToken) return res.status(400).send("must have a  token");
-  const tokenIsValid = await RefreshTokens.findOne({
-    where: { refresh_token: refreshToken },
-  });
-  if (!tokenIsValid) return res.status(401).send("invalid refresh token"); /////////login willbe require
+  try {
+    const tokenIsValid = await RefreshTokens.findOne({
+      where: { refresh_token: refreshToken },
+    });
+    if (!tokenIsValid) return res.status(401).send("invalid refresh token"); /////////login willbe require
 
-  //check refreshToken
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-    if (err) return res.status(401).send("invalid refresh token"); /////////login willbe require
-    //valid
-    const newAccessToken = jwt.sign(
-      { username: user.username },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "10s" }
-    );
-    return res.json({ newAccessToken });
-  });
+    //check refreshToken
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+      if (err) return res.status(401).send("invalid refresh token"); /////////login willbe require
+      //valid
+      const newAccessToken = jwt.sign(
+        { username: user.username },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "10s" }
+      );
+      return res.json({ newAccessToken });
+    });
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
 });
 
 //log out
@@ -96,28 +111,34 @@ users.post("/logout", validator, (req, res) => {
     ? req.headers["refreshtoken"].split(" ")[1]
     : null;
   if (!refreshToken) return res.status(400).send("must have a  token");
+  try {
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      async (err, user) => {
+        if (err) return res.status(401).send("invalid refresh token"); /////////login willbe require
 
-  jwt.verify(
-    refreshToken,
-    process.env.REFRESH_TOKEN_SECRET,
-    async (err, user) => {
-      if (err) return res.status(401).send("invalid refresh token"); /////////login willbe require
-      const refreshTokenFromDb = await RefreshTokens.findOne({
-        where: { refresh_token: refreshToken },
-      });
-      if (!refreshTokenFromDb)
-        return res.status(401).send("invalid refresh token"); /////////login willbe require
-      refreshTokenFromDb
-        .destroy()
-        .then((result) => {
-          res.send("loggedout successfully");
-        })
-        .catch((error) => {
-          console.log(error);
-          res.status(500).send("unable to delete");
+        const refreshTokenFromDb = await RefreshTokens.findOne({
+          where: { refresh_token: refreshToken },
         });
-    }
-  );
+
+        if (!refreshTokenFromDb)
+          return res.status(401).send("invalid refresh token"); /////////login willbe require
+        refreshTokenFromDb
+          .destroy()
+          .then((result) => {
+            res.send("loggedout successfully");
+          })
+          .catch((error) => {
+            console.log(error);
+            res.status(500).send("unable to delete");
+          });
+      }
+    );
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
 });
 
 module.exports = users;

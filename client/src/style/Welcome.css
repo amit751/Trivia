@@ -1,51 +1,97 @@
 #welcome-component {
-  margin: auto;
-  background-color: brown;
-  margin-top: 5%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  margin: 0;
+}
+
+#welcome-component .headline {
+  background-color: transparent;
+  font-size: 6rem;
+  /* color: lightskyblue; */
+}
+#welcome-component .T {
+  color: rgb(126, 230, 74) 50%;
+}
+#welcome-component .A-and-W {
+  color: rgb(62, 154, 216) 50%;
+}
+#welcome-component .headline::first-letter {
+  font-size: 8.5rem;
+}
+
+#welcome-component #welcome-with-auth-component {
+  display: flex;
   text-align: center;
-  width: 60%;
-  height: 20rem;
-  border-radius: 0.1em;
+  justify-content: center;
+  flex-direction: column;
+  background-color: transparent;
+  width: 20%;
+  margin: auto;
 }
 
-#welcome-component #player-name {
-  border: none;
-  height: 2rem;
-  align-self: center;
-}
-
-#welcome-component button {
-  border: none;
-  background-color: cornflowerblue;
-  font-size: xx-large;
-}
-#welcome-component #table-link {
-  color: beige;
-}
-#welcome-component #table-link {
+#welcome-component #login-link {
   text-decoration: none;
-  background-color: chocolate;
-  height: 3rem;
-  font-size: xx-large;
-  width: 100%;
+  font-size: 2rem;
+  color: DarkSlateBlue;
+  border: DarkSlateBlue solid 3px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 4px;
 }
-#welcome-component #table-link:hover {
-  color: aliceblue;
-  background-color: blueviolet;
+#welcome-component #login-link:hover {
+  background-color: DarkSlateBlue;
+  color: white;
 }
-#welcome-component #name {
-  /* left: 48rem; */
-  font-size: 2em;
-  margin-right: 2rem;
+
+#welcome-component #singup-link {
+  text-decoration: none;
+  font-size: 2rem;
+  color: white;
+  border: MediumSpringGreen solid 3px;
+  background-color: MediumSpringGreen;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 4px;
+  margin-top: 20px;
 }
-#welcome-component button:hover {
-  font-size: xxx-large;
+
+#welcome-component #singup-link:hover {
+  border: MediumSpringGreen solid 3px;
+  color: MediumSpringGreen;
+  background-color: transparent;
 }
-.headline {
-  margin-top: 5rem;
-  font-size: xxx-large;
-  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+
+#welcome-component .bg {
+  animation: slide 3s ease-in-out infinite alternate;
+  background-image: linear-gradient(
+    -60deg,
+    rgb(126, 230, 74) 50%,
+    rgb(62, 154, 216) 50%
+  );
+  bottom: 0;
+  left: -50%;
+  opacity: 0.5;
+  position: fixed;
+  right: -50%;
+  top: 0;
+  z-index: -1;
+}
+
+#welcome-component .bg2 {
+  animation-direction: alternate-reverse;
+  animation-duration: 4s;
+}
+
+#welcome-component .bg3 {
+  animation-duration: 5s;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(-25%);
+  }
+  100% {
+    transform: translateX(25%);
+  }
 }

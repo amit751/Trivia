@@ -8,7 +8,7 @@ import Cookies from "js-cookie";
 export default function TableScore({ history, playerName }) {
   const [tableScore, setTableScore] = useState([]);
   useEffect(() => {
-    Network("http://localhost:3000/players", "GET")
+    Network("https://hallowed-key-312708.ew.r.appspot.com/players", "GET")
       .then((data) => {
         setTableScore(data.map((result) => result));
       })
@@ -20,7 +20,7 @@ export default function TableScore({ history, playerName }) {
   }, []);
 
   const logOut = () => {
-    Network("http://localhost:3000/users/logout", "POST")
+    Network("https://hallowed-key-312708.ew.r.appspot.com/users/logout", "POST")
       .then((result) => {
         console.log(result);
       })

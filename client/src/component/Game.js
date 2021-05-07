@@ -20,7 +20,7 @@ export default function Game({ history, playerName }) {
   const rateRef = useRef(0);
   const [questionCounter, setQuestionCounter] = useState(1);
   const logOut = () => {
-    Network("http://localhost:3000/users/logout", "POST")
+    Network("https://hallowed-key-312708.ew.r.appspot.com/users/logout", "POST")
       .then((result) => {
         console.log(result);
       })
@@ -34,7 +34,7 @@ export default function Game({ history, playerName }) {
 
   useEffect(() => {
     if (mistakeCounter === 3) {
-      Network("http://localhost:3000/players", "POST", {
+      Network("https://hallowed-key-312708.ew.r.appspot.com/players", "POST", {
         name: playerName,
         score: totalScore,
       })
@@ -51,7 +51,7 @@ export default function Game({ history, playerName }) {
     try {
       if (questionCounter % 3 === 0) {
         const test = await Network(
-          "http://localhost:3000/savedQuestion",
+          "https://hallowed-key-312708.ew.r.appspot.com/savedQuestion",
           "GET"
         ); ////////
         if (
@@ -59,7 +59,7 @@ export default function Game({ history, playerName }) {
           alreadyAskedSavedQuestion.current.includes(test.savedQuestionID)
         ) {
           const data = await Network(
-            "http://localhost:3000/newQuestion",
+            "https://hallowed-key-312708.ew.r.appspot.com/newQuestion",
             "GET"
           ); /////
           setCurrentQuestion(data);
@@ -67,7 +67,10 @@ export default function Game({ history, playerName }) {
           setCurrentQuestion(test);
         }
       } else {
-        const data = await Network("http://localhost:3000/newQuestion", "GET"); ////////
+        const data = await Network(
+          "https://hallowed-key-312708.ew.r.appspot.com/newQuestion",
+          "GET"
+        ); ////////
         setCurrentQuestion(data);
       }
     } catch (error) {
@@ -77,7 +80,10 @@ export default function Game({ history, playerName }) {
 
   useEffect(async () => {
     try {
-      const data = await Network("http://localhost:3000/newQuestion", "GET"); ////////
+      const data = await Network(
+        "https://hallowed-key-312708.ew.r.appspot.com/newQuestion",
+        "GET"
+      ); ////////
       setCurrentQuestion(data);
     } catch (e) {
       console.log(e, "try & catch");
@@ -102,13 +108,13 @@ export default function Game({ history, playerName }) {
     if (currentQuestion.savedQuestions) {
       if (Number(rateRef.current.value)) {
         await Network(
-          `http://localhost:3000/rate/${currentQuestion.savedQuestionID}`,
+          `https://hallowed-key-312708.ew.r.appspot.com/rate/${currentQuestion.savedQuestionID}`,
           "POST",
           { rate: Number(rateRef.current.value) }
         ); ////////////////////////////////
       }
       const data = await Network(
-        `http://localhost:3000/savedAnswer/${currentQuestion.savedQuestionID}`,
+        `https://hallowed-key-312708.ew.r.appspot.com/savedAnswer/${currentQuestion.savedQuestionID}`,
         "GET"
       ); //////////////////////////////
       dbAnswer = data.answer;
@@ -119,7 +125,7 @@ export default function Game({ history, playerName }) {
     } else {
       if (Number(rateRef.current.value)) {
         const data = await Network(
-          "http://localhost:3000/savedQuestion",
+          "https://hallowed-key-312708.ew.r.appspot.com/savedQuestion",
           "POST", /////////////////////////////////////
           currentQuestion
         );
@@ -128,13 +134,17 @@ export default function Game({ history, playerName }) {
           ...alreadyAskedSavedQuestion.current,
           data.id,
         ];
-        await Network(`http://localhost:3000/rate/${data.id}`, "POST", {
-          ///////////////////////////////////
-          rate: Number(rateRef.current.value),
-        });
+        await Network(
+          `https://hallowed-key-312708.ew.r.appspot.com/rate/${data.id}`,
+          "POST",
+          {
+            ///////////////////////////////////
+            rate: Number(rateRef.current.value),
+          }
+        );
       }
       const data = await Network(
-        "http://localhost:3000/getNewAnswer",
+        "https://hallowed-key-312708.ew.r.appspot.com/getNewAnswer",
         "POST", ////////////////////////////////////////
         currentQuestion
       );

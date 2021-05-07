@@ -1,0 +1,85 @@
+.signup-component {
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  height: 100vh;
+  padding-top: 100px;
+}
+
+.signup-component .register-box {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  width: 20%;
+  margin: auto;
+  padding: 20px;
+  background-color: transparent;
+  border: white solid 3px;
+  border-radius: 4px;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.signup-component input {
+  border: white solid 3px;
+  background-color: transparent;
+  border-radius: 4px;
+  margin: 5px;
+  text-align: center;
+  outline: none;
+  color: white;
+  padding: 9px;
+}
+.signup-component input::placeholder {
+  text-align: center;
+  color: white;
+  background-color: transparent;
+}
+.signup-component input[type="text"] {
+  width: 100px;
+  -webkit-transition: width 0.35s ease-in-out;
+  transition: width 0.35s ease-in-out;
+}
+.signup-component input[type="text"]:focus {
+  width: 250px;
+}
+.signup-component input[type="email"] {
+  width: 100px;
+  -webkit-transition: width 0.35s ease-in-out;
+  transition: width 0.35s ease-in-out;
+}
+.signup-component input[type="email"]:focus {
+  width: 250px;
+}
+.signup-component input[type="password"] {
+  width: 100px;
+  -webkit-transition: width 0.35s ease-in-out;
+  transition: width 0.35s ease-in-out;
+}
+.signup-component input[type="password"]:focus {
+  width: 250px;
+}
+
+.signup-component .submit-button {
+  width: 50%;
+  margin: 25px auto;
+  height: 7vh;
+  font-size: 1.5rem;
+  background-color: MediumSpringGreen;
+  border: none;
+  border-radius: 4px;
+}
+.signup-component .submit-button:hover {
+  cursor: pointer;
+  opacity: 0.7;
+}

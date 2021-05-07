@@ -22,7 +22,7 @@ const headersWithoutRefresh = () => {
 };
 export default async function Network(url, method, body = {}) {
   const headers =
-    url === "http://localhost:3000/users/logout"
+    url === "https://hallowed-key-312708.ew.r.appspot.com/users/logout"
       ? headersWithRefresh()
       : headersWithoutRefresh();
 
@@ -54,7 +54,7 @@ export default async function Network(url, method, body = {}) {
 const getRefreshToken = async (config) => {
   return axios({
     method: "POST",
-    url: "http://localhost:3000/users/newtoken",
+    url: "https://hallowed-key-312708.ew.r.appspot.com/users/newtoken",
     data: {},
     headers: headersWithRefresh(),
   })
