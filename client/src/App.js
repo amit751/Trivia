@@ -48,10 +48,3 @@ function App() {
 }
 
 export default App;
-
-// <Route
-//                   path='/game'
-//                   render={(props) => (
-//                     <Game {...props} playerName={playerName} />
-//                   )}
-//                 />
