@@ -32,14 +32,22 @@ REFRESH_TOKEN_SECRET =
 copy the above and sing into those variables your one local sql connection details.
 
 2.open the terminal and run the commends:
+
 a. cd client
+
 b. npm i
+
 c. cd ..
+
 d. cd db
+
 h. npm i
+
 now you loaded the dependencie on both folders: db and client and you should be in db folder.
 run the next commands in the terminal:
+
 1.npx sequelize-cli db:migrate
+
 2.npx sequelize-cli db:seed:all
 
 ---
@@ -48,6 +56,8 @@ now in the terminal run:
 
 1. npm run dev. you should see the log: listening on port 3000.
    open another terminal and type:
+
 1. cd client
+
 1. npm start. the browser should open and you are good to go.
    good luck
